@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portfolio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100vh;font-family:system-ui,sans-serif;background:#fff;color:#1a1a1a}
+
+/* ── LOADING ── */
+#loading{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:12px}
+#loading p{font-size:13px;color:#999}
+.spinner{width:28px;height:28px;border:2px solid #eee;border-top-color:#00a0ff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── EDIT TOOLBAR ── */
+#etb{display:none;background:#111;padding:10px 16px;position:sticky;top:0;z-index:90;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid #333}
+.el{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#555;white-space:nowrap}
+.ei{background:#1e1e1e;border:1px solid #333;color:#ccc;padding:5px 8px;border-radius:4px;font-size:12px;font-family:inherit;outline:none}
+.ei:focus{border-color:#00a0ff}
+.efl{font-size:11px;color:#3FB950;opacity:0;transition:opacity .3s}
+.efl.on{opacity:1}
+.efl.err{color:#f85149}
+.ebtn{padding:6px 14px;border:none;border-radius:4px;font-size:12px;font-family:inherit;cursor:pointer}
+.esave{background:#00a0ff;color:#fff}
+.eexit{background:#2a2a2a;color:#888}
+.esave:hover{background:#0088dd}
+.eexit:hover{color:#fff}
+.esp{flex:1}
+
+/* ── HEADER ── */
+header{padding:20px 24px;border-bottom:1px solid #eee}
+.hr{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.hn{font-size:22px;font-weight:700}
+.hs{font-size:13px;color:#888;margin-top:3px}
+.hl{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.hl a{font-size:13px;color:#666;text-decoration:none}
+.hl a:hover{color:#1a1a1a}
+.cva{font-size:12px;padding:6px 14px;border:1px solid #ddd;border-radius:5px;color:#555;text-decoration:none}
+.cva:hover{border-color:#bbb;color:#1a1a1a}
+
+/* ── GRID ── */
+#grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:3px}
+.cell{position:relative;overflow:hidden;background:#dde6ee;cursor:pointer}
+.sq{aspect-ratio:1/1}
+.sp2{grid-column:span 2;aspect-ratio:2/1}
+.sp3{grid-column:span 3;aspect-ratio:3/1}
+.sp4{grid-column:span 4;aspect-ratio:4/1}
+.cell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.cell:hover img{transform:scale(1.03)}
+.ccap{position:absolute;bottom:0;left:0;right:0;padding:22px 12px 8px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-size:12px;font-weight:500;opacity:0;transition:opacity .2s;pointer-events:none}
+.cell:hover .ccap{opacity:1}
+.cno{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:12px}
+
+/* ── EDIT OVERLAY ── */
+.ceo{position:absolute;inset:0;background:rgba(0,0,0,.55);display:none;flex-direction:column;gap:5px;padding:8px}
+body.em .ceo{display:flex}
+body.em .ccap{display:none}
+body.em .cell:hover img{transform:none}
+.cin{background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:11px;padding:4px 7px;border-radius:3px;width:100%;font-family:inherit;outline:none}
+.cin:focus{border-color:#00a0ff}
+.cin::placeholder{color:rgba(255,255,255,.3)}
+.cdel{align-self:flex-end;background:rgba(200,40,40,.8);color:#fff;border:none;border-radius:3px;font-size:11px;padding:2px 8px;cursor:pointer;margin-top:auto}
+.cdel:hover{background:#c00}
+
+/* ── ADD ROW ── */
+#addbar{display:none;padding:10px 16px;background:#f7f7f7;border-top:1px solid #eee;gap:8px;flex-wrap:wrap;align-items:center}
+body.em #addbar{display:flex}
+.albl{font-size:11px;color:#999}
+.abtn{padding:5px 12px;border:1px solid #ddd;border-radius:4px;font-size:11px;color:#666;background:#fff;cursor:pointer}
+.abtn:hover{border-color:#00a0ff;color:#00a0ff}
+.rdel{background:none;border:none;color:#e00;font-size:11px;cursor:pointer;padding:6px}
+.rdel:hover{text-decoration:underline}
+
+/* ── LIGHTBOX ── */
+#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;align-items:center;justify-content:center;padding:16px;flex-direction:column;gap:10px}
+#lb.on{display:flex}
+#lbi{max-width:90vw;max-height:82vh;object-fit:contain;border-radius:3px}
+#lbx{position:fixed;top:14px;right:18px;background:none;border:none;color:#888;font-size:28px;cursor:pointer;line-height:1}
+#lbx:hover{color:#fff}
+#lbc{color:#ccc;font-size:13px;background:rgba(0,0,0,.5);padding:5px 14px;border-radius:4px;max-width:80vw;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="spinner"></div>
+  <p>Загрузка...</p>
+</div>
+
+<!-- EDIT TOOLBAR -->
+<div id="etb">
+  <span class="el">Имя</span>
+  <input class="ei" id="ename" style="width:150px">
+  <span class="el">Подпись</span>
+  <input class="ei" id="esub" style="width:130px">
+  <span class="el">Email</span>
+  <input class="ei" id="eemail" style="width:180px">
+  <span class="el">LinkedIn URL</span>
+  <input class="ei" id="eli" style="width:190px">
+  <span class="el">ArtStation URL</span>
+  <input class="ei" id="eas" style="width:190px">
+  <span class="el">CV (Google Drive)</span>
+  <input class="ei" id="ecv" style="width:200px" placeholder="https://drive.google.com/...">
+  <div class="esp"></div>
+  <span class="efl" id="efl"></span>
+  <button class="ebtn esave" onclick="saveAll()">💾 Сохранить</button>
+  <button class="ebtn eexit" onclick="exitEdit()">✕ Выйти</button>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="hr">
+    <div>
+      <div class="hn" id="hname"></div>
+      <div class="hs" id="hsub"></div>
+    </div>
+    <div class="hl" id="hlinks"></div>
+  </div>
+</header>
+
+<!-- GRID -->
+<div id="grid"></div>
+
+<!-- ADD ROW -->
+<div id="addbar">
+  <span class="albl">+ Добавить строку:</span>
+  <button class="abtn" onclick="addRow('sq4')">■■■■ 4 квадрата</button>
+  <button class="abtn" onclick="addRow('sp2sq2')">▬■■ Широкий + 2</button>
+  <button class="abtn" onclick="addRow('sq2sp2')">■■▬ 2 + широкий</button>
+  <button class="abtn" onclick="addRow('sp3sq1')">▬▬■ 3+1</button>
+  <button class="abtn" onclick="addRow('sq1sp3')">■▬▬ 1+3</button>
+  <button class="abtn" onclick="addRow('sp2sp2')">▬▬ Два широких</button>
+  <button class="abtn" onclick="addRow('sp4')">▬▬▬▬ На всю ширину</button>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lb">
+  <button id="lbx" onclick="closeLB()">×</button>
+  <img id="lbi" src="" alt="">
+  <div id="lbc"></div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   КОНФИГ — вставь свои значения из jsonbin.io
+   ════════════════════════════════════════════════ */
+var BIN_ID  = '6a857598f5f4af5e2927e1b3';
+var API_KEY = '$2a$10$yiqe27PHrmTV/4eeP4rI4.R6d/kXdKb44upyfo9IY8XcU8gcKxsfC';
+/* ════════════════════════════════════════════════ */
+
+var SECRET = 'bong2026';
+var IS_EDIT = new URLSearchParams(location.search).get('key') === SECRET;
+
+var S = {
+  name:'Mariia Filippova', subtitle:'2D artist · Wargaming',
+  email:'marybong13@gmail.com',
+  liUrl:'https://linkedin.com/in/mariia-filippova-marybong',
+  asUrl:'https://artstation.com/marybong',
+  cvUrl:'', rows:[]
+};
+
+var RC = {
+  sq4:   {cells:4, spans:[1,1,1,1]},
+  sp2sq2:{cells:3, spans:[2,1,1]},
+  sq2sp2:{cells:3, spans:[1,1,2]},
+  sp3sq1:{cells:2, spans:[3,1]},
+  sq1sp3:{cells:2, spans:[1,3]},
+  sp2sp2:{cells:2, spans:[2,2]},
+  sp4:   {cells:1, spans:[4]}
+};
+
+function sc(n){ return n===1?'sq':'sp'+n; }
+
+function gd(url){
+  if(!url) return '';
+  var m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if(m) return 'https://drive.google.com/uc?export=view&id='+m[1];
+  return url;
+}
+
+/* ── API ── */
+function apiUrl(){ return 'https://api.jsonbin.io/v3/b/'+BIN_ID; }
+function apiHeaders(){ return {'Content-Type':'application/json','X-Master-Key':API_KEY,'X-Bin-Versioning':'false'}; }
+
+function loadRemote(){
+  return fetch(apiUrl()+'/latest', {headers:apiHeaders()})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d && d.record && d.record.rows !== undefined){
+        S = d.record;
+        localStorage.setItem('mf_cache', JSON.stringify(S));
+      }
+    })
+    .catch(function(e){ console.warn('Не удалось загрузить:', e); });
+}
+
+function saveRemote(){
+  return fetch(apiUrl(), {
+    method:'PUT',
+    headers:apiHeaders(),
+    body:JSON.stringify(S)
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(){
+    localStorage.setItem('mf_cache', JSON.stringify(S));
+    flash('✓ Сохранено на сервере', false);
+  })
+  .catch(function(){
+    flash('✗ Ошибка сохранения', true);
+  });
+}
+
+function flash(msg, isErr){
+  var f=document.getElementById('efl');
+  f.textContent=msg;
+  f.className='efl'+(isErr?' err':' on');
+  setTimeout(function(){ f.className='efl'; }, 2500);
+}
+
+/* ── RENDER ── */
+function renderHeader(){
+  document.getElementById('hname').textContent = S.name||'';
+  document.getElementById('hsub').textContent = S.subtitle||'';
+  document.title = S.name||'Portfolio';
+  var hl = document.getElementById('hlinks');
+  hl.innerHTML='';
+  function link(href, label, cls){
+    var a=document.createElement('a');
+    a.href=href; a.textContent=label;
+    if(cls) a.className=cls;
+    if(!href.startsWith('mailto')) a.target='_blank';
+    hl.appendChild(a);
+  }
+  if(S.email) link('mailto:'+S.email,'Email');
+  if(S.liUrl) link(S.liUrl,'LinkedIn');
+  if(S.asUrl) link(S.asUrl,'ArtStation');
+  if(S.cvUrl) link(gd(S.cvUrl),'↓ CV','cva');
+}
+
+function renderGrid(){
+  var grid=document.getElementById('grid');
+  grid.innerHTML='';
+  S.rows.forEach(function(row){
+    var cfg=RC[row.type]; if(!cfg) return;
+    row.cells.forEach(function(cell,ci){
+      var span=cfg.spans[ci]||1;
+      var div=document.createElement('div');
+      div.className='cell '+sc(span);
+      var imgUrl=gd(cell.url||'');
+      if(imgUrl){
+        var img=document.createElement('img');
+        img.src=imgUrl; img.alt=cell.caption||'';
+        div.appendChild(img);
+      } else {
+        var ph=document.createElement('div');
+        ph.className='cno'; ph.textContent=IS_EDIT?'Нет картинки':'';
+        div.appendChild(ph);
+      }
+      var cap=document.createElement('div');
+      cap.className='ccap'; cap.textContent=cell.caption||'';
+      div.appendChild(cap);
+
+      /* edit overlay */
+      var eo=document.createElement('div'); eo.className='ceo';
+      var ui=document.createElement('input'); ui.className='cin';
+      ui.placeholder='Google Drive ссылка...'; ui.value=cell.url||'';
+      ui.onchange=function(){ cell.url=this.value; renderGrid(); };
+      var ci2=document.createElement('input'); ci2.className='cin';
+      ci2.placeholder='Подпись...'; ci2.value=cell.caption||'';
+      ci2.onchange=function(){ cell.caption=this.value; };
+      var db=document.createElement('button'); db.className='cdel';
+      db.textContent='✕ Удалить';
+      (function(c){ db.onclick=function(){ c.url=''; c.caption=''; renderGrid(); }; })(cell);
+      eo.appendChild(ui); eo.appendChild(ci2); eo.appendChild(db);
+      div.appendChild(eo);
+
+      if(!IS_EDIT && imgUrl){
+        div.onclick=function(){ openLB(imgUrl, cell.caption||''); };
+      }
+      grid.appendChild(div);
+    });
+
+    /* delete row */
+    if(IS_EDIT){
+      var rd=document.createElement('div');
+      rd.className='cell sq';
+      rd.style.cssText='background:#fafafa;border:1px dashed #ddd;display:flex;align-items:center;justify-content:center';
+      var rb=document.createElement('button'); rb.className='rdel';
+      rb.textContent='✕ Удалить строку';
+      (function(id){ rb.onclick=function(){
+        if(!confirm('Удалить строку?')) return;
+        S.rows=S.rows.filter(function(r){return r.id!==id;});
+        renderGrid();
+      }; })(row.id);
+      rd.appendChild(rb); grid.appendChild(rd);
+    }
+  });
+}
+
+function addRow(type){
+  var cfg=RC[type]; if(!cfg) return;
+  var cells=[]; for(var i=0;i<cfg.cells;i++) cells.push({url:'',caption:''});
+  S.rows.push({id:'r'+Date.now(),type:type,cells:cells});
+  renderGrid();
+  setTimeout(function(){ window.scrollTo(0,document.body.scrollHeight); },50);
+}
+
+function fillEditor(){
+  document.getElementById('ename').value=S.name||'';
+  document.getElementById('esub').value=S.subtitle||'';
+  document.getElementById('eemail').value=S.email||'';
+  document.getElementById('eli').value=S.liUrl||'';
+  document.getElementById('eas').value=S.asUrl||'';
+  document.getElementById('ecv').value=S.cvUrl||'';
+}
+
+function saveAll(){
+  S.name=document.getElementById('ename').value;
+  S.subtitle=document.getElementById('esub').value;
+  S.email=document.getElementById('eemail').value;
+  S.liUrl=document.getElementById('eli').value;
+  S.asUrl=document.getElementById('eas').value;
+  S.cvUrl=document.getElementById('ecv').value;
+  renderHeader();
+  flash('Сохраняю...', false);
+  saveRemote();
+}
+
+function exitEdit(){ saveAll(); setTimeout(function(){ location.href=location.pathname; },800); }
+
+/* ── LIGHTBOX ── */
+function openLB(url,cap){
+  document.getElementById('lbi').src=url;
+  var lbc=document.getElementById('lbc');
+  lbc.textContent=cap; lbc.style.display=cap?'block':'none';
+  document.getElementById('lb').classList.add('on');
+}
+function closeLB(){ document.getElementById('lb').classList.remove('on'); }
+document.getElementById('lb').addEventListener('click',function(e){if(e.target===this)closeLB();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLB();});
+
+/* ── INIT ── */
+(function(){
+  /* показать кеш пока грузим с сервера */
+  try{
+    var cached=localStorage.getItem('mf_cache');
+    if(cached){ S=JSON.parse(cached); renderHeader(); renderGrid(); }
+  }catch(e){}
+
+  loadRemote().then(function(){
+    document.getElementById('loading').style.display='none';
+    renderHeader(); renderGrid();
+    if(IS_EDIT){
+      document.getElementById('etb').style.display='flex';
+      document.body.classList.add('em');
+      fillEditor();
+    }
+  });
+})();
+</script>
+</body>
+</html>
