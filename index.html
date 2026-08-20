@@ -21,7 +21,7 @@ html,body{min-height:100vh;font-family:system-ui,sans-serif;background:#fff;colo
 .ei:focus{border-color:#00a0ff}
 .efl{font-size:11px;color:#3FB950;opacity:0;transition:opacity .3s}
 .efl.on{opacity:1}
-.efl.err{color:#f85149}
+.efl.err{color:#f85149;opacity:1}
 .ebtn{padding:6px 14px;border:none;border-radius:4px;font-size:12px;font-family:inherit;cursor:pointer}
 .esave{background:#00a0ff;color:#fff}
 .eexit{background:#2a2a2a;color:#888}
@@ -30,18 +30,19 @@ html,body{min-height:100vh;font-family:system-ui,sans-serif;background:#fff;colo
 .esp{flex:1}
 
 /* ── HEADER ── */
-header{padding:20px 24px;border-bottom:1px solid #eee}
-.hr{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.hn{font-size:22px;font-weight:700}
-.hs{font-size:13px;color:#888;margin-top:3px}
-.hl{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
-.hl a{font-size:13px;color:#666;text-decoration:none}
-.hl a:hover{color:#1a1a1a}
-.cva{font-size:12px;padding:6px 14px;border:1px solid #ddd;border-radius:5px;color:#555;text-decoration:none}
-.cva:hover{border-color:#bbb;color:#1a1a1a}
+header{padding:28px 60px 22px;border-bottom:1px solid #eee}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:6px}
+.hname{font-size:38px;font-weight:700;white-space:nowrap;line-height:1}
+.hdesc{font-size:15px;color:#999;margin-top:2px}
+.hlinks{display:flex;gap:20px;align-items:center;flex-wrap:nowrap}
+.hlinks a{font-size:15px;color:#666;text-decoration:none;white-space:nowrap}
+.hlinks a:hover{color:#1a1a1a}
+.hcv{font-size:14px;padding:7px 16px;border:1.5px solid #ddd;border-radius:6px;color:#555}
+.hcv:hover{border-color:#bbb;color:#1a1a1a}
 
 /* ── GRID ── */
-#grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:3px}
+.gwrap{padding:16px 60px 40px}
+#grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .cell{position:relative;overflow:hidden;background:#dde6ee;cursor:pointer}
 .sq{aspect-ratio:1/1}
 .sp2{grid-column:span 2;aspect-ratio:2/1}
@@ -65,10 +66,10 @@ body.em .cell:hover img{transform:none}
 .cdel:hover{background:#c00}
 
 /* ── ADD ROW ── */
-#addbar{display:none;padding:10px 16px;background:#f7f7f7;border-top:1px solid #eee;gap:8px;flex-wrap:wrap;align-items:center}
+#addbar{display:none;padding:12px 60px;background:#f7f7f7;border-top:1px solid #eee;gap:8px;flex-wrap:wrap;align-items:center}
 body.em #addbar{display:flex}
-.albl{font-size:11px;color:#999}
-.abtn{padding:5px 12px;border:1px solid #ddd;border-radius:4px;font-size:11px;color:#666;background:#fff;cursor:pointer}
+.albl{font-size:11px;color:#999;white-space:nowrap}
+.abtn{padding:5px 12px;border:1px solid #ddd;border-radius:4px;font-size:11px;color:#666;background:#fff;cursor:pointer;white-space:nowrap}
 .abtn:hover{border-color:#00a0ff;color:#00a0ff}
 .rdel{background:none;border:none;color:#e00;font-size:11px;cursor:pointer;padding:6px}
 .rdel:hover{text-decoration:underline}
@@ -79,23 +80,19 @@ body.em #addbar{display:flex}
 #lbi{max-width:90vw;max-height:82vh;object-fit:contain;border-radius:3px}
 #lbx{position:fixed;top:14px;right:18px;background:none;border:none;color:#888;font-size:28px;cursor:pointer;line-height:1}
 #lbx:hover{color:#fff}
-#lbc{color:#ccc;font-size:13px;background:rgba(0,0,0,.5);padding:5px 14px;border-radius:4px;max-width:80vw;text-align:center}
+#lbc{color:#ccc;font-size:13px;background:rgba(0,0,0,.5);padding:5px 14px;border-radius:4px;max-width:80vw;text-align:center;display:none}
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
-<div id="loading">
-  <div class="spinner"></div>
-  <p>Загрузка...</p>
-</div>
+<div id="loading"><div class="spinner"></div><p>Загрузка...</p></div>
 
 <!-- EDIT TOOLBAR -->
 <div id="etb">
   <span class="el">Имя</span>
-  <input class="ei" id="ename" style="width:150px">
-  <span class="el">Подпись</span>
-  <input class="ei" id="esub" style="width:130px">
+  <input class="ei" id="ename" style="width:160px">
+  <span class="el">Описание</span>
+  <input class="ei" id="edesc" style="width:240px" placeholder="2D Art Supervisor · Wargaming · Belgrade">
   <span class="el">Email</span>
   <input class="ei" id="eemail" style="width:180px">
   <span class="el">LinkedIn URL</span>
@@ -112,17 +109,15 @@ body.em #addbar{display:flex}
 
 <!-- HEADER -->
 <header>
-  <div class="hr">
-    <div>
-      <div class="hn" id="hname"></div>
-      <div class="hs" id="hsub"></div>
-    </div>
-    <div class="hl" id="hlinks"></div>
+  <div class="hrow">
+    <div class="hname" id="hname"></div>
+    <div class="hlinks" id="hlinks"></div>
   </div>
+  <div class="hdesc" id="hdesc"></div>
 </header>
 
 <!-- GRID -->
-<div id="grid"></div>
+<div class="gwrap"><div id="grid"></div></div>
 
 <!-- ADD ROW -->
 <div id="addbar">
@@ -144,22 +139,22 @@ body.em #addbar{display:flex}
 </div>
 
 <script>
-/* ════════════════════════════════════════════════
-   КОНФИГ — вставь свои значения из jsonbin.io
-   ════════════════════════════════════════════════ */
+/* ══ КОНФИГ ══════════════════════════════════════════════ */
 var BIN_ID  = '6a857598f5f4af5e2927e1b3';
 var API_KEY = '$2a$10$yiqe27PHrmTV/4eeP4rI4.R6d/kXdKb44upyfo9IY8XcU8gcKxsfC';
-/* ════════════════════════════════════════════════ */
+var SECRET  = 'bong2026';
+/* ════════════════════════════════════════════════════════ */
 
-var SECRET = 'bong2026';
 var IS_EDIT = new URLSearchParams(location.search).get('key') === SECRET;
 
 var S = {
-  name:'Mariia Filippova', subtitle:'2D artist · Wargaming',
+  name:'Mariia Filippova',
+  desc:'2D Art Supervisor · Environment Artist · Wargaming · Belgrade',
   email:'marybong13@gmail.com',
   liUrl:'https://linkedin.com/in/mariia-filippova-marybong',
   asUrl:'https://artstation.com/marybong',
-  cvUrl:'', rows:[]
+  cvUrl:'',
+  rows:[]
 };
 
 var RC = {
@@ -174,70 +169,67 @@ var RC = {
 
 function sc(n){ return n===1?'sq':'sp'+n; }
 
+/* Google Drive — thumbnail format (работает без блокировки) */
 function gd(url){
   if(!url) return '';
-  var m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if(m) return 'https://drive.google.com/uc?export=view&id='+m[1];
+  var m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if(m) return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1200';
+  /* если уже thumbnail или другой формат — вернуть как есть */
   return url;
 }
 
-/* ── API ── */
-function apiUrl(){ return 'https://api.jsonbin.io/v3/b/'+BIN_ID; }
-function apiHeaders(){ return {'Content-Type':'application/json','X-Master-Key':API_KEY,'X-Bin-Versioning':'false'}; }
-
-function loadRemote(){
-  return fetch(apiUrl()+'/latest', {headers:apiHeaders()})
-    .then(function(r){ return r.json(); })
+/* ── API JSONBin ── */
+function apiLoad(){
+  return fetch('https://api.jsonbin.io/v3/b/'+BIN_ID+'/latest',
+    {headers:{'X-Master-Key':API_KEY}})
+    .then(function(r){return r.json();})
     .then(function(d){
-      if(d && d.record && d.record.rows !== undefined){
-        S = d.record;
-        localStorage.setItem('mf_cache', JSON.stringify(S));
+      if(d&&d.record&&d.record.rows!==undefined){
+        S=d.record;
+        localStorage.setItem('mf_cache',JSON.stringify(S));
       }
     })
-    .catch(function(e){ console.warn('Не удалось загрузить:', e); });
+    .catch(function(e){console.warn('load error',e);});
 }
 
-function saveRemote(){
-  return fetch(apiUrl(), {
+function apiSave(){
+  return fetch('https://api.jsonbin.io/v3/b/'+BIN_ID,{
     method:'PUT',
-    headers:apiHeaders(),
+    headers:{'Content-Type':'application/json','X-Master-Key':API_KEY,'X-Bin-Versioning':'false'},
     body:JSON.stringify(S)
   })
-  .then(function(r){ return r.json(); })
   .then(function(){
-    localStorage.setItem('mf_cache', JSON.stringify(S));
-    flash('✓ Сохранено на сервере', false);
+    localStorage.setItem('mf_cache',JSON.stringify(S));
+    flash('✓ Сохранено',false);
   })
-  .catch(function(){
-    flash('✗ Ошибка сохранения', true);
-  });
+  .catch(function(){ flash('✗ Ошибка сохранения',true); });
 }
 
-function flash(msg, isErr){
+function flash(msg,err){
   var f=document.getElementById('efl');
-  f.textContent=msg;
-  f.className='efl'+(isErr?' err':' on');
-  setTimeout(function(){ f.className='efl'; }, 2500);
+  f.textContent=msg; f.className='efl'+(err?' err':' on');
+  if(!err) setTimeout(function(){f.className='efl';},2000);
 }
 
 /* ── RENDER ── */
 function renderHeader(){
-  document.getElementById('hname').textContent = S.name||'';
-  document.getElementById('hsub').textContent = S.subtitle||'';
-  document.title = S.name||'Portfolio';
-  var hl = document.getElementById('hlinks');
+  document.getElementById('hname').textContent=S.name||'';
+  document.getElementById('hdesc').textContent=S.desc||'';
+  document.title=S.name||'Portfolio';
+  var hl=document.getElementById('hlinks');
   hl.innerHTML='';
-  function link(href, label, cls){
+  function lnk(href,label,cls){
+    if(!href) return;
     var a=document.createElement('a');
     a.href=href; a.textContent=label;
     if(cls) a.className=cls;
     if(!href.startsWith('mailto')) a.target='_blank';
     hl.appendChild(a);
   }
-  if(S.email) link('mailto:'+S.email,'Email');
-  if(S.liUrl) link(S.liUrl,'LinkedIn');
-  if(S.asUrl) link(S.asUrl,'ArtStation');
-  if(S.cvUrl) link(gd(S.cvUrl),'↓ CV','cva');
+  lnk('mailto:'+S.email,'Email');
+  lnk(S.liUrl,'LinkedIn');
+  lnk(S.asUrl,'ArtStation');
+  if(S.cvUrl) lnk(gd(S.cvUrl),'↓ CV','hcv');
 }
 
 function renderGrid(){
@@ -271,25 +263,22 @@ function renderGrid(){
       var ci2=document.createElement('input'); ci2.className='cin';
       ci2.placeholder='Подпись...'; ci2.value=cell.caption||'';
       ci2.onchange=function(){ cell.caption=this.value; };
-      var db=document.createElement('button'); db.className='cdel';
-      db.textContent='✕ Удалить';
+      var db=document.createElement('button'); db.className='cdel'; db.textContent='✕';
       (function(c){ db.onclick=function(){ c.url=''; c.caption=''; renderGrid(); }; })(cell);
       eo.appendChild(ui); eo.appendChild(ci2); eo.appendChild(db);
       div.appendChild(eo);
 
-      if(!IS_EDIT && imgUrl){
-        div.onclick=function(){ openLB(imgUrl, cell.caption||''); };
+      if(!IS_EDIT&&imgUrl){
+        div.onclick=function(){ openLB(imgUrl,cell.caption||''); };
       }
       grid.appendChild(div);
     });
 
-    /* delete row */
     if(IS_EDIT){
       var rd=document.createElement('div');
       rd.className='cell sq';
       rd.style.cssText='background:#fafafa;border:1px dashed #ddd;display:flex;align-items:center;justify-content:center';
-      var rb=document.createElement('button'); rb.className='rdel';
-      rb.textContent='✕ Удалить строку';
+      var rb=document.createElement('button'); rb.className='rdel'; rb.textContent='✕ Удалить строку';
       (function(id){ rb.onclick=function(){
         if(!confirm('Удалить строку?')) return;
         S.rows=S.rows.filter(function(r){return r.id!==id;});
@@ -305,12 +294,12 @@ function addRow(type){
   var cells=[]; for(var i=0;i<cfg.cells;i++) cells.push({url:'',caption:''});
   S.rows.push({id:'r'+Date.now(),type:type,cells:cells});
   renderGrid();
-  setTimeout(function(){ window.scrollTo(0,document.body.scrollHeight); },50);
+  setTimeout(function(){window.scrollTo(0,document.body.scrollHeight);},50);
 }
 
 function fillEditor(){
   document.getElementById('ename').value=S.name||'';
-  document.getElementById('esub').value=S.subtitle||'';
+  document.getElementById('edesc').value=S.desc||'';
   document.getElementById('eemail').value=S.email||'';
   document.getElementById('eli').value=S.liUrl||'';
   document.getElementById('eas').value=S.asUrl||'';
@@ -319,23 +308,26 @@ function fillEditor(){
 
 function saveAll(){
   S.name=document.getElementById('ename').value;
-  S.subtitle=document.getElementById('esub').value;
+  S.desc=document.getElementById('edesc').value;
   S.email=document.getElementById('eemail').value;
   S.liUrl=document.getElementById('eli').value;
   S.asUrl=document.getElementById('eas').value;
   S.cvUrl=document.getElementById('ecv').value;
   renderHeader();
-  flash('Сохраняю...', false);
-  saveRemote();
+  flash('Сохраняю...',false);
+  apiSave();
 }
 
-function exitEdit(){ saveAll(); setTimeout(function(){ location.href=location.pathname; },800); }
+function exitEdit(){
+  saveAll();
+  setTimeout(function(){location.href=location.pathname;},800);
+}
 
 /* ── LIGHTBOX ── */
 function openLB(url,cap){
   document.getElementById('lbi').src=url;
-  var lbc=document.getElementById('lbc');
-  lbc.textContent=cap; lbc.style.display=cap?'block':'none';
+  var c=document.getElementById('lbc');
+  c.textContent=cap; c.style.display=cap?'block':'none';
   document.getElementById('lb').classList.add('on');
 }
 function closeLB(){ document.getElementById('lb').classList.remove('on'); }
@@ -344,13 +336,12 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLB();})
 
 /* ── INIT ── */
 (function(){
-  /* показать кеш пока грузим с сервера */
   try{
-    var cached=localStorage.getItem('mf_cache');
-    if(cached){ S=JSON.parse(cached); renderHeader(); renderGrid(); }
+    var c=localStorage.getItem('mf_cache');
+    if(c){S=JSON.parse(c);renderHeader();renderGrid();}
   }catch(e){}
 
-  loadRemote().then(function(){
+  apiLoad().then(function(){
     document.getElementById('loading').style.display='none';
     renderHeader(); renderGrid();
     if(IS_EDIT){
