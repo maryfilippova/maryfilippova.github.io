@@ -84,6 +84,7 @@ body.em .resize-handle{display:flex}
 /* Cell background div (replaces <img>) */
 .cell-bg{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;background-position:center;transition:transform .3s}
 .cell:hover .cell-bg{transform:scale(1.03)}
+body.em .cell:hover .cell-bg{transform:none}
 
 /* Cell drag feedback */
 .cell.cell-drag-over{outline:2px dashed #00a0ff;outline-offset:-2px}
@@ -234,7 +235,7 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
 <!-- LIGHTBOX -->
 <div id="lb">
   <button id="lbx" onclick="closeLB()">×</button>
-  <div id="lb-scroll"><img id="lb-img" alt="" draggable="false"></div>
+  <div id="lb-scroll"><div id="lb-img-wrap" style="position:relative;display:inline-block;line-height:0"><img id="lb-img" alt="" draggable="false"><img id="lb-nda-img" src="" alt="NDA" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;cursor:default"></div></div>
   <div id="lb-scroll-track"><div id="lb-scroll-thumb"></div></div>
   <div id="lb-title"></div>
   <div id="lb-thumbs"></div>
@@ -706,23 +707,19 @@ var NDA_SRC='';
   NDA_SRC=c.toDataURL('image/jpeg',0.85);
 })();
 
-/* Lightbox NDA и drag-scroll */
+/* Lightbox drag-scroll + NDA overlay */
 (function(){
-  var lbImg=document.getElementById('lb-img');
   var lbScroll=document.getElementById('lb-scroll');
 
-  /* правый клик на картинке в лайтбоксе → скачивается NDA */
-  lbImg.addEventListener('contextmenu',function(e){
-    e.preventDefault();
-    var a=document.createElement('a');a.href=NDA_SRC;
-    a.download='NDA_Mariia_Filippova.jpg';
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    showToast();return false;
-  });
+  /* NDA overlay img — когда откроется лайтбокс, проставляем src */
+  var lbNda=document.getElementById('lb-nda-img');
+  /* src ставится после инициализации NDA_SRC */
+  setTimeout(function(){if(lbNda&&NDA_SRC)lbNda.src=NDA_SRC;},100);
 
-  /* drag-scroll внутри лайтбокса */
+  /* drag-scroll */
   var isDown=false,startX=0,scrollLeft=0;
   lbScroll.addEventListener('mousedown',function(e){
+    if(e.target.tagName==='IMG'&&e.target.id!=='lb-nda-img')return;
     isDown=true;startX=e.pageX-lbScroll.offsetLeft;scrollLeft=lbScroll.scrollLeft;
   });
   document.addEventListener('mouseup',function(){isDown=false;});
