@@ -188,7 +188,7 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
 /* No select */
 .cell-bg,.fs-item,.lb-thumb{-webkit-user-select:none;user-select:none}
 
-/* ПЕЧАТНАЯ ВЕРСИЯ (Идеальный PDF) */
+/* ═════ ПЕЧАТНАЯ ВЕРСИЯ (Идеальный PDF) ═════ */
 @media print{
   @page { margin: 0; size: A4 portrait; }
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
@@ -205,27 +205,29 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
   .hright { align-items: flex-end; }
   .hcontacts { font-size: 11pt; color: #444; }
 
-  /* FLEXBOX ВМЕСТО GRID ДЛЯ ИДЕАЛЬНЫХ ПРОПОРЦИЙ В ПЕЧАТИ */
+  /* ЖЕСТКИЙ FLEXBOX ВМЕСТО GRID — защита от бага Chrome */
   .rw { break-inside: avoid; page-break-inside: avoid; margin-bottom: 4px !important; display: block !important; }
-  #rows-wrap { padding: 4px 0; gap: 4px; }
+  #rows-wrap { padding: 4px 0; gap: 4px; display: block !important; }
   .rg { gap: 4px !important; display: flex !important; flex-wrap: nowrap !important; height: 100% !important; }
   
   .cell { position: relative !important; height: 100% !important; overflow: hidden !important; flex-shrink: 0 !important; background: transparent !important; }
   
-  /* Точные размеры колонок (4px - зазор между ними) */
+  /* Точные математические размеры колонок (4px - зазор между ними) */
   .sq  { width: calc(25% - 3px) !important; }
   .sp2 { width: calc(50% - 2px) !important; }
   .sp3 { width: calc(75% - 1px) !important; }
   .sp4 { width: 100% !important; }
   
-  /* Фон остается фоном, без искажений DOM */
-  .cell-bg {
+  /* Математическая печатная картинка (никаких transform!) */
+  .cell-print-img {
     display: block !important;
     position: absolute !important;
-    inset: 0 !important;
+    object-fit: cover !important;
+    max-width: none !important;
+    max-height: none !important;
     -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
   }
+  .cell-bg { display: none !important; }
   
   .ccap { opacity: 1 !important; position: absolute !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 2 !important; }
   .fill-ok, .cnt-badge { display: none !important; }
@@ -238,6 +240,8 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
     background: #fff;
   }
 }
+/* Скрываем печатную картинку на экране */
+.cell-print-img { display: none; }
 </style>
 </head>
 <body>
@@ -526,7 +530,6 @@ function checkCellFill(cellDiv, cellData, fo) {
         bgH = bgW / iar;
     }
     
-    // Погрешность в 1px из-за дробных пикселей в браузерах
     var isUnder = (bgW < cw - 1) || (bgH < ch - 1);
     
     if (isUnder) {
@@ -651,6 +654,28 @@ function renderGrid(){
 
       var cap=document.createElement('div');cap.className='ccap';cap.textContent=cell.caption||'';div.appendChild(cap);
 
+      /* ПЕЧАТНАЯ КАРТИНКА - ЧИСТАЯ МАТЕМАТИКА БЕЗ TRANSFORM */
+      var pimg = null;
+      if(imgUrl){
+        pimg=document.createElement('img');
+        pimg.src=gdFull(imgUrl); // Сразу грузим High-Res для PDF!
+        pimg.alt='';
+        pimg.className='cell-print-img';
+        div.appendChild(pimg);
+      }
+      
+      // Функция для обновления печатной картинки математически
+      function updatePrintImg() {
+        if(!pimg) return;
+        var z = cell.zoom || 100;
+        var px = cell.posX !== undefined ? cell.posX : 50;
+        
+        pimg.style.width = z + '%';
+        pimg.style.height = z + '%';
+        pimg.style.left = ((100 - z) * (px / 100)) + '%';
+        pimg.style.top = ((100 - z) * 0.5) + '%';
+      }
+
       if(IS_EDIT){
         var swapActive=false,swapThreshold=8,swapStartX=0,swapStartY=0;
         div.addEventListener('mousedown',function(e){
@@ -708,6 +733,7 @@ function renderGrid(){
           cell.zoom=Math.min(300,Math.max(30,parseInt(val)||100));
           znum.value=cell.zoom;
           bg.style.backgroundSize=cell.zoom===100?'cover':cell.zoom+'%';
+          updatePrintImg();
           if(div.updateFill) div.updateFill();
         }
         znum.addEventListener('change',function(){applyZoom(this.value);});
@@ -730,6 +756,7 @@ function renderGrid(){
           cell.posX=Math.min(100,Math.max(0,Math.round(px)));
           pthumb.style.left=cell.posX+'%';
           bg.style.backgroundPosition=cell.posX+'% center';
+          updatePrintImg();
         }
         applyPos(cell.posX!==undefined?cell.posX:50);
 
@@ -747,11 +774,13 @@ function renderGrid(){
           document.addEventListener('mouseup',onUp);
         });
         
-        // КОЛЕСИКО ДЛЯ ПОЗИЦИИ (Теперь висит на всей строке prow)
+        // КОЛЕСИКО НА ПОЗИЦИИ 
         prow.addEventListener('wheel', function(e){
             e.preventDefault();
             e.stopPropagation();
-            var step = e.deltaY < 0 ? 2 : -2; // шаг 2% для скорости
+            // Поддержка и вертикального, и горизонтального скролла
+            var delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
+            var step = delta > 0 ? 2 : -2; 
             var currentPx = cell.posX !== undefined ? cell.posX : 50;
             applyPos(currentPx + step);
         }, {passive: false});
@@ -859,7 +888,7 @@ function renderGrid(){
       }
 
       rg.appendChild(div);
-      
+      updatePrintImg(); // Инициализация
       if(IS_EDIT){
           setTimeout(function(){ if(div.updateFill) div.updateFill(); }, 50);
       }
