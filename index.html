@@ -88,8 +88,8 @@ body.em .cell:hover .cell-bg{transform:none}
 /* Красный фон в редакторе — показывает незаполненные края */
 body.em .cell{background:#cc2222!important}
 /* Зелёная галочка — картинка полностью заполняет ячейку */
-.fill-ok{position:absolute;top:5px;left:5px;background:rgba(0,180,0,.85);color:#fff;font-size:10px;padding:2px 7px;border-radius:3px;display:none;z-index:6;pointer-events:none}
-body.em .fill-ok{display:block}
+/* fill-ok теперь внутри оверлея, убираем абсолютное позиционирование */
+.fill-ok{display:inline-flex;align-items:center;gap:3px;background:rgba(0,180,0,.85);color:#fff;font-size:10px;padding:2px 7px;border-radius:3px;pointer-events:none;white-space:nowrap}
 
 /* Cell drag feedback */
 .cell.cell-drag-over{outline:2px dashed #00a0ff;outline-offset:-2px}
@@ -121,7 +121,13 @@ body.em .ccap,.body.em .filmstrip{pointer-events:none;opacity:0!important}
 .zoom-bar-wrap{flex:1;height:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:3px;position:relative;cursor:ew-resize;user-select:none;touch-action:none}
 .zoom-bar-fill{height:100%;background:rgba(0,160,255,.45);border-radius:3px;pointer-events:none}
 .zoom-bar-icon{position:absolute;right:5px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.5);font-size:11px;pointer-events:none}
-.zoom-num{width:42px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:3px 5px;border-radius:3px;font-family:inherit;text-align:center}
+.zoom-num{width:46px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:3px 5px;border-radius:3px;font-family:inherit;text-align:center;-moz-appearance:textfield}
+.zoom-num::-webkit-inner-spin-button,.zoom-num::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+/* Position bar */
+.pos-row{display:flex;align-items:center;gap:6px;margin-top:4px}
+.pos-bar-wrap{flex:1;height:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:3px;position:relative;cursor:ew-resize;user-select:none;touch-action:none}
+.pos-bar-thumb{position:absolute;top:2px;bottom:2px;width:14px;background:#00a0ff;border-radius:2px;transform:translateX(-50%);transition:left .05s;pointer-events:none}
+.pos-bar-icon{position:absolute;right:5px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);font-size:10px;pointer-events:none}
 .extra-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .extra-item{position:relative;width:38px;height:38px;cursor:grab}
 .extra-item.drag-over{outline:2px dashed #00a0ff;outline-offset:1px}
@@ -487,7 +493,9 @@ function renderGrid(){
       /* background div — prevents right-click save */
       var bg=document.createElement('div');bg.className='cell-bg';
       var zoomVal=cell.zoom||100;
+      var posX=cell.posX!==undefined?cell.posX:50;
       bg.style.backgroundSize=zoomVal===100?'cover':zoomVal+'%';
+      bg.style.backgroundPosition=posX+'% center';
       if(imgUrl)bg.style.backgroundImage='url('+imgUrl+')';
       div.appendChild(bg);
 
@@ -533,17 +541,12 @@ function renderGrid(){
       /* caption */
       var cap=document.createElement('div');cap.className='ccap';cap.textContent=cell.caption||'';div.appendChild(cap);
 
-      /* fill-ok indicator — только в edit mode */
-      var fo=document.createElement('div');fo.className='fill-ok';
-      fo.textContent=(cell.url&&(cell.zoom||100)===100)?'✓ Заполнено':'';
-      div.appendChild(fo);
-
       /* edit overlay */
       if(IS_EDIT){
         /* cell swap — через mousedown/mousemove, не HTML5 drag */
         var swapActive=false,swapThreshold=8,swapStartX=0,swapStartY=0;
         div.addEventListener('mousedown',function(e){
-          if(e.target.closest('.ceo')||e.target.closest('.zoom-bar-wrap')||e.target.closest('.zoom-num')) return;
+          if(e.target.closest('.ceo')||e.target.closest('.pos-bar-wrap')||e.target.closest('.zoom-num')) return;
           swapActive=false;swapStartX=e.clientX;swapStartY=e.clientY;
           cellDragSrc={rowId:row.id,ci:ci};
         });
@@ -588,48 +591,56 @@ function renderGrid(){
         ci2.placeholder='Подпись...';ci2.value=cell.caption||'';
         ci2.onchange=function(){cell.caption=this.value;};
 
-        /* zoom drag-bar */
+        /* zoom — только числовое поле */
         var zrow=document.createElement('div');zrow.className='zoom-row';
         var zlbl=document.createElement('span');zlbl.className='zoom-lbl';zlbl.textContent='Масштаб:';
-        var zwrap=document.createElement('div');zwrap.className='zoom-bar-wrap';
-        var zfill=document.createElement('div');zfill.className='zoom-bar-fill';
-        var zicon=document.createElement('div');zicon.className='zoom-bar-icon';zicon.textContent='⟺';
-        zwrap.appendChild(zfill);zwrap.appendChild(zicon);
         var znum=document.createElement('input');znum.type='number';znum.className='zoom-num';
         znum.min=30;znum.max=300;znum.value=cell.zoom||100;
         var zpct=document.createElement('span');zpct.className='zoom-lbl';zpct.textContent='%';
-
         function applyZoom(val){
           cell.zoom=Math.min(300,Math.max(30,parseInt(val)||100));
           znum.value=cell.zoom;
           bg.style.backgroundSize=cell.zoom===100?'cover':cell.zoom+'%';
-          var pct=(cell.zoom-30)/(300-30)*100;
-          zfill.style.width=pct+'%';
-          /* fill-ok индикатор */
-          var fo=div.querySelector('.fill-ok');
-          if(fo) fo.textContent=cell.zoom===100&&cell.url?'✓ Заполнено':'';
+          if(typeof updateFillOk==='function') updateFillOk();
         }
-        /* init fill bar */
-        var initPct=((cell.zoom||100)-30)/(300-30)*100;
-        zfill.style.width=initPct+'%';
+        znum.addEventListener('change',function(){applyZoom(this.value);});
+        znum.addEventListener('input',function(){applyZoom(this.value);});
+        znum.addEventListener('mousedown',function(e){e.stopPropagation();});
+        znum.addEventListener('wheel',function(e){
+          e.preventDefault();
+          applyZoom((cell.zoom||100)+(e.deltaY<0?1:-1));
+        },{passive:false});
+        zrow.appendChild(zlbl);zrow.appendChild(znum);zrow.appendChild(zpct);
 
-        /* drag on bar — mousedown+mousemove, не HTML5 drag */
-        zwrap.addEventListener('mousedown',function(e){
+        /* position drag-bar — двигает картинку влево/вправо */
+        var prow=document.createElement('div');prow.className='pos-row';
+        var plbl=document.createElement('span');plbl.className='zoom-lbl';plbl.textContent='Позиция:';
+        var pwrap=document.createElement('div');pwrap.className='pos-bar-wrap';
+        var pthumb=document.createElement('div');pthumb.className='pos-bar-thumb';
+        var picon=document.createElement('div');picon.className='pos-bar-icon';picon.textContent='◂▸';
+        pwrap.appendChild(pthumb);pwrap.appendChild(picon);
+
+        function applyPos(px){
+          cell.posX=Math.min(100,Math.max(0,Math.round(px)));
+          pthumb.style.left=cell.posX+'%';
+          bg.style.backgroundPosition=cell.posX+'% center';
+        }
+        applyPos(cell.posX!==undefined?cell.posX:50);
+
+        pwrap.addEventListener('mousedown',function(e){
           e.preventDefault();e.stopPropagation();
-          var startX=e.clientX,startVal=cell.zoom||100;
+          var rect=pwrap.getBoundingClientRect();
+          var startX=e.clientX,startPx=cell.posX!==undefined?cell.posX:50;
           function onMove(ev){
             var dx=ev.clientX-startX;
-            applyZoom(startVal+Math.round(dx*1.5));
+            var dpct=dx/rect.width*100;
+            applyPos(startPx+dpct);
           }
           function onUp(){ document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp); }
           document.addEventListener('mousemove',onMove);
           document.addEventListener('mouseup',onUp);
         });
-        znum.addEventListener('change',function(){applyZoom(this.value);});
-        znum.addEventListener('input',function(){applyZoom(this.value);});
-        /* prevent drag starting from number input */
-        znum.addEventListener('mousedown',function(e){e.stopPropagation();});
-        zrow.appendChild(zlbl);zrow.appendChild(zwrap);zrow.appendChild(znum);zrow.appendChild(zpct);
+        prow.appendChild(plbl);prow.appendChild(pwrap);
         var frow=document.createElement('div');frow.className='eo-row';
         var fchk=document.createElement('input');fchk.type='checkbox';fchk.className='eo-check';
         fchk.checked=cell.showFilmstrip!==false;
@@ -689,9 +700,23 @@ function renderGrid(){
           }
         };
         var clr=document.createElement('button');clr.className='cclr';clr.textContent='✕ Очистить';
-        (function(c){clr.onclick=function(){c.url='';c.caption='';c.images=[];renderGrid();};})(cell);
-        eo.appendChild(ui);eo.appendChild(ci2);eo.appendChild(zrow);eo.appendChild(frow);
-        eo.appendChild(elbl);eo.appendChild(extList);eo.appendChild(addExt);eo.appendChild(clr);
+        (function(c){clr.onclick=function(){c.url='';c.caption='';c.images=[];c.zoom=100;c.posX=50;renderGrid();};})(cell);
+
+        /* fill-ok рядом с кнопкой Очистить */
+        var bottomRow=document.createElement('div');
+        bottomRow.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:4px';
+        var fo=document.createElement('div');fo.className='fill-ok';
+        function updateFillOk(){
+          var filled=cell.url&&(cell.zoom||100)>=100;
+          fo.textContent=filled?'✓ Заполнено':(cell.url?'⚠ Не заполнено':'');
+          fo.style.background=filled?'rgba(0,180,0,.85)':'rgba(180,50,0,.7)';
+          fo.style.display=cell.url?'inline-flex':'none';
+        }
+        updateFillOk();
+        bottomRow.appendChild(fo);bottomRow.appendChild(clr);
+
+        eo.appendChild(ui);eo.appendChild(ci2);eo.appendChild(zrow);eo.appendChild(prow);eo.appendChild(frow);
+        eo.appendChild(elbl);eo.appendChild(extList);eo.appendChild(addExt);eo.appendChild(bottomRow);
         div.appendChild(eo);
       }
 
