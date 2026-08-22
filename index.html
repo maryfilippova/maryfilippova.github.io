@@ -43,12 +43,12 @@ html,body{min-height:100vh;font-family:system-ui,sans-serif;background:#fff;colo
 
 /* HEADER */
 header{border-bottom:1px solid #eee;padding:22px 0 18px}
-.hrow{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
-.hright{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
-.hcontacts{font-size:13px;color:#666}
-.hname{font-size:34px;font-weight:700;line-height:1.1}
-.hline{font-size:14px;color:#888;margin-top:3px}
-.hlinks{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding-top:4px}
+.hrow{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.hright{display:flex;flex-direction:column;align-items:flex-end;gap:12px;margin-bottom:2px}
+.hcontacts{font-size:14px;color:#888;line-height:1.4}
+.hname{font-size:34px;font-weight:700;line-height:1.1;margin-bottom:6px}
+.hline{font-size:14px;color:#888;margin-top:4px;line-height:1.4}
+.hlinks{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .hlinks a,.hlinks button{font-size:14px;color:#666;text-decoration:none;background:none;border:none;cursor:pointer}
 .hlinks a:hover,.hlinks button:hover{color:#1a1a1a}
 .hcv,.hpdf{padding:6px 14px;border:1px solid #ddd!important;border-radius:5px;color:#555!important;font-size:13px!important}
@@ -58,14 +58,20 @@ header{border-bottom:1px solid #eee;padding:22px 0 18px}
 
 /* ROW */
 .rw{position:relative}
+/* Row Drag Effects */
+.rw.dragging { opacity: 0.5; }
+.rw.drag-over { outline: 2px dashed #00a0ff; outline-offset: 4px; z-index: 50; background: rgba(0, 160, 255, 0.05); border-radius: 4px; }
 
 /* ROW CONTROLS */
 .rctrl{position:absolute;left:-68px;top:0;bottom:0;width:60px;display:none;flex-direction:column;align-items:center;justify-content:center;gap:6px}
 body.em .rctrl{display:flex}
 .drag-grip{font-size:14px;color:#bbb;cursor:grab;padding:4px 7px;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:3px;user-select:none;line-height:1}
 .drag-grip:active{cursor:grabbing}
-.del-row-btn{background:none;border:1px solid #fcc;color:#c00;border-radius:4px;font-size:10px;padding:2px 6px;cursor:pointer}
-.del-row-btn:hover{background:#fff0f0}
+.rctrl-btn{background:none;border:1px solid #e0e0e0;border-radius:4px;font-size:10px;padding:3px 6px;cursor:pointer;width:100%}
+.rctrl-btn.sq-btn{color:#555;}
+.rctrl-btn.sq-btn:hover{background:#eee;color:#000;border-color:#ccc;}
+.rctrl-btn.del-btn{border-color:#fcc;color:#c00;}
+.rctrl-btn.del-btn:hover{background:#fff0f0;}
 
 /* RESIZE HANDLE */
 .resize-handle{position:absolute;bottom:-8px;left:0;right:0;height:16px;display:none;align-items:center;justify-content:center;cursor:ns-resize;z-index:20}
@@ -129,10 +135,20 @@ body.em .ccap,.body.em .filmstrip{pointer-events:none;opacity:0!important}
 .extra-item.drag-over{outline:2px dashed #00a0ff;outline-offset:1px}
 .extra-item.dragging{opacity:.4}
 
-/* zoom slider */
+/* zoom slider & input NO ARROWS */
 .zoom-row{display:flex;align-items:center;gap:6px;margin-top:4px}
 .zoom-sl{flex:1;accent-color:#00a0ff;cursor:pointer;height:16px}
-.zoom-num{width:46px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:11px;padding:3px 5px;border-radius:3px;font-family:inherit;text-align:center}
+.zoom-num{
+  width:46px; background:rgba(0,0,0,.7); border:1px solid rgba(255,255,255,.25); 
+  color:#fff; font-size:11px; padding:3px 5px; border-radius:3px; font-family:inherit; text-align:center;
+  -moz-appearance: textfield; /* Hides arrows in Firefox */
+}
+/* Hides arrows in Chrome/Safari/Edge */
+.zoom-num::-webkit-outer-spin-button,
+.zoom-num::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 .zoom-lbl{font-size:10px;color:rgba(255,255,255,.5);white-space:nowrap}
 .extra-item .eibg{width:100%;height:100%;border-radius:2px;border:1px solid rgba(255,255,255,.3);background-size:cover;background-position:center}
 .extra-del{position:absolute;top:-5px;right:-5px;background:#e00;color:#fff;border:none;border-radius:50%;width:15px;height:15px;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
@@ -193,26 +209,21 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
   .layout{padding:0 8mm}
   header{padding:10mm 0 6mm;border-bottom:1px solid #ddd}
 
-  .rw{break-inside:avoid;page-break-inside:avoid;margin-bottom:3px}
-  #rows-wrap{padding:4px 0;gap:3px}
-  .rg{gap:3px!important}
-  .cell-bg{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-  .ccap{opacity:1!important}
+  .rw{break-inside:avoid;page-break-inside:avoid;margin-bottom:4px!important}
+  #rows-wrap{padding:4px 0;gap:4px}
+  .rg{gap:4px!important; display:grid!important; grid-template-columns:repeat(4,1fr)!important;}
   
-  /* Print img фикс cover */
-  .cell-print-img{
+  /* Идеальный рендер фонов на печати */
+  .cell-bg{
     display:block!important;
-    width:100%!important;
-    height:100%!important;
-    object-fit:cover!important;
+    position:absolute!important; inset:0!important;
     -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
   }
-  .cell-bg{display:none!important}
   
-  .rg{display:grid!important;grid-template-columns:repeat(4,1fr)!important}
-  .cell{overflow:hidden!important; position:relative!important;}
+  .cell{overflow:hidden!important; position:relative!important; background:transparent!important;}
+  .ccap{opacity:1!important}
   .fill-ok,.cnt-badge{display:none!important}
-  body.em .cell{background:transparent!important}
 
   #print-footer{
     display:block!important;
@@ -389,31 +400,31 @@ function renderHeader(){
     pb.textContent='📄 PDF';pb.onclick=dlPDF;hl.appendChild(pb);
   }
 
-  /* Почта и телега */
   var hc=document.getElementById('hcontacts');
   if(hc){
     hc.innerHTML='';
     var ct=[];
     if(S.email) ct.push('Email: '+S.email);
-    if(S.tgUrl) ct.push('Telegram: '+S.tgUrl.replace('https://','').replace('t.me/',''));
+    if(S.tgUrl) {
+      // Аккуратно формируем ссылку на Telegram, добавляя @
+      var cleanTg = S.tgUrl.replace(/https?:\/\//,'').replace('t.me/','').replace('@','');
+      ct.push('Telegram: @' + cleanTg);
+    }
     hc.textContent = ct.join(' · ');
   }
 
-  /* pdf footer */
   var pf=document.getElementById('pf-name');if(pf)pf.textContent=S.name||'';
   var pe=document.getElementById('pf-email');if(pe)pe.textContent=S.email||'';
   var pt=document.getElementById('pf-tg');if(pt)pt.textContent=S.tgUrl?S.tgUrl.replace('https://',''):'';
 }
 
-/* CELL DRAG */
-var cellDragSrc={rowId:null,ci:null};
-/* ROW DRAG */
+/* DRAG & DROP ROWS */
 var rowDragId=null;
-
 function makeRowDraggable(rw,rowId,grip){
   var active=false;
   grip.addEventListener('mousedown',function(){active=true; rw.draggable=true;});
   document.addEventListener('mouseup',function(){active=false;rw.draggable=false;});
+  
   rw.addEventListener('dragstart',function(e){
     if(!active){e.preventDefault();return;}
     rowDragId=rowId;e.dataTransfer.effectAllowed='move';
@@ -448,6 +459,12 @@ function makeResizable(handle,row,rg){
       var dy=e.clientY-startY;
       row.rowH=Math.max(60,Math.min(800,startH+dy));
       rg.style.gridAutoRows=row.rowH+'px';
+      
+      if(IS_EDIT){
+          rg.querySelectorAll('.cell').forEach(function(c){
+              if(c.updateFill) c.updateFill();
+          });
+      }
     }
     function onUp(){
       handle.classList.remove('active');
@@ -458,6 +475,48 @@ function makeResizable(handle,row,rg){
     document.addEventListener('mouseup',onUp);
   });
 }
+
+/* SMART FILL CHECKER */
+var imgCache = {};
+function checkCellFill(cellDiv, cellData, fo) {
+    if(!cellData.url) {
+        fo.textContent = '⚠ Нет фото';
+        fo.style.background = 'rgba(180,50,0,.7)';
+        return;
+    }
+    var z = cellData.zoom || 100;
+    if (z === 100) {
+        fo.textContent = '✓ Заполнено';
+        fo.style.background = 'rgba(0,180,0,.85)';
+        return;
+    }
+    
+    var url = gd(cellData.url);
+    if(!imgCache[url]) {
+        var img = new Image();
+        img.onload = function(){
+            imgCache[url] = {w: img.naturalWidth, h: img.naturalHeight};
+            checkCellFill(cellDiv, cellData, fo);
+        };
+        img.src = url;
+        return; 
+    }
+    
+    var sz = imgCache[url];
+    var cw = cellDiv.clientWidth;
+    var ch = cellDiv.clientHeight;
+    
+    var bgW = cw * (z / 100);
+    var bgH = bgW * (sz.h / sz.w);
+    
+    var filled = (bgW >= cw - 1) && (bgH >= ch - 1);
+    
+    fo.textContent = filled ? '✓ Заполнено ('+z+'%)' : '⚠ Поля ('+z+'%)';
+    fo.style.background = filled ? 'rgba(0,180,0,.85)' : 'rgba(180,50,0,.7)';
+}
+
+/* CELL SWAP */
+var cellDragSrc={rowId:null,ci:null};
 
 /* RENDER GRID */
 var lbItems=[];
@@ -472,20 +531,33 @@ function renderGrid(){
     if(!row.cells)row.cells=[];
 
     var rw=document.createElement('div');rw.className='rw';
+    var rg=document.createElement('div');rg.className='rg';
+    rg.style.gridAutoRows=row.rowH+'px';
 
     if(IS_EDIT){
       var rc=document.createElement('div');rc.className='rctrl';
+      
       var grip=document.createElement('span');grip.className='drag-grip';grip.textContent='⠿';grip.title='Перетащить строку';
-      var db=document.createElement('button');db.className='del-row-btn';db.textContent='✕ Удалить';
+      rc.appendChild(grip);
+      
+      var sqBtn=document.createElement('button');sqBtn.className='rctrl-btn sq-btn';
+      sqBtn.textContent='⛶ 1:1';sqBtn.title='Сделать квадратным (по ширине 1 колонки)';
+      sqBtn.onclick=function(){
+          var colW = (rg.clientWidth - 12) / 4;
+          row.rowH = Math.round(colW);
+          rg.style.gridAutoRows = row.rowH + 'px';
+          rg.querySelectorAll('.cell').forEach(function(c){ if(c.updateFill) c.updateFill(); });
+      };
+      rc.appendChild(sqBtn);
+
+      var db=document.createElement('button');db.className='rctrl-btn del-btn';db.textContent='✕ Удалить';
       (function(id){db.onclick=function(){if(!confirm('Удалить строку?'))return;S.rows=S.rows.filter(function(r){return r.id!==id;});renderGrid();};})(row.id);
-      rc.appendChild(grip);rc.appendChild(db);
+      rc.appendChild(db);
+      
       rw.appendChild(rc);
       rw.setAttribute('draggable','false');
       makeRowDraggable(rw,row.id,grip);
     }
-
-    var rg=document.createElement('div');rg.className='rg';
-    rg.style.gridAutoRows=row.rowH+'px';
 
     row.cells.forEach(function(cell,ci){
       if(ci>=cfg.cells)return;
@@ -539,16 +611,7 @@ function renderGrid(){
 
       var cap=document.createElement('div');cap.className='ccap';cap.textContent=cell.caption||'';div.appendChild(cap);
 
-      /* print-only img */
-      var pimg = null;
-      if(imgUrl){
-        pimg=document.createElement('img');
-        pimg.src=imgUrl;pimg.alt='';
-        pimg.className='cell-print-img';
-        pimg.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:'+(posX)+'% center;display:none';
-        div.appendChild(pimg);
-      }
-
+      if(IS_EDIT){
         var swapActive=false,swapThreshold=8,swapStartX=0,swapStartY=0;
         div.addEventListener('mousedown',function(e){
           if(e.target.closest('.ceo')||e.target.closest('.pos-bar-wrap')||e.target.closest('.zoom-num')) return;
@@ -605,7 +668,7 @@ function renderGrid(){
           cell.zoom=Math.min(300,Math.max(30,parseInt(val)||100));
           znum.value=cell.zoom;
           bg.style.backgroundSize=cell.zoom===100?'cover':cell.zoom+'%';
-          if(typeof updateFillOk==='function') updateFillOk();
+          if(div.updateFill) div.updateFill();
         }
         znum.addEventListener('change',function(){applyZoom(this.value);});
         znum.addEventListener('input',function(){applyZoom(this.value);});
@@ -627,7 +690,6 @@ function renderGrid(){
           cell.posX=Math.min(100,Math.max(0,Math.round(px)));
           pthumb.style.left=cell.posX+'%';
           bg.style.backgroundPosition=cell.posX+'% center';
-          if(pimg) pimg.style.objectPosition = cell.posX+'% center';
         }
         applyPos(cell.posX!==undefined?cell.posX:50);
 
@@ -650,12 +712,14 @@ function renderGrid(){
         pReset.addEventListener('mousedown',function(e){e.stopPropagation();});
         pReset.onclick=function(){applyPos(50);};
         prow.appendChild(pReset);
+        
         var frow=document.createElement('div');frow.className='eo-row';
         var fchk=document.createElement('input');fchk.type='checkbox';fchk.className='eo-check';
         fchk.checked=cell.showFilmstrip!==false;
         fchk.onchange=function(){cell.showFilmstrip=this.checked;};
         var flbl=document.createElement('span');flbl.className='eo-label';flbl.textContent='Filmstrip на главной';
         frow.appendChild(fchk);frow.appendChild(flbl);
+        
         var elbl=document.createElement('div');elbl.className='eo-label';elbl.style.marginTop='4px';elbl.textContent='Доп. изображения:';
         var extList=document.createElement('div');extList.className='extra-list';
         function renderExtras(){
@@ -711,13 +775,8 @@ function renderGrid(){
         var bottomRow=document.createElement('div');
         bottomRow.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:4px';
         var fo=document.createElement('div');fo.className='fill-ok';
-        function updateFillOk(){
-          var filled=cell.url&&(cell.zoom||100)>=100;
-          fo.textContent=filled?'✓ Заполнено':(cell.url?'⚠ Не заполнено':'');
-          fo.style.background=filled?'rgba(0,180,0,.85)':'rgba(180,50,0,.7)';
-          fo.style.display=cell.url?'inline-flex':'none';
-        }
-        updateFillOk();
+        
+        div.updateFill = function() { checkCellFill(div, cell, fo); };
 
         var btnWrap=document.createElement('div');
         btnWrap.style.display='flex';
@@ -725,11 +784,8 @@ function renderGrid(){
 
         var cdef=document.createElement('button');
         cdef.className='cdef';
-        cdef.textContent='⟲ Сброс настроек';
-        cdef.onclick=function(){
-          applyZoom(100);
-          applyPos(50);
-        };
+        cdef.textContent='⟲ Сброс';
+        cdef.onclick=function(){ applyZoom(100); applyPos(50); };
 
         var clr=document.createElement('button');
         clr.className='cclr';
@@ -738,13 +794,13 @@ function renderGrid(){
 
         btnWrap.appendChild(cdef);
         btnWrap.appendChild(clr);
-
         bottomRow.appendChild(fo);
         bottomRow.appendChild(btnWrap);
 
         eo.appendChild(ui);eo.appendChild(ci2);eo.appendChild(zrow);eo.appendChild(prow);eo.appendChild(frow);
         eo.appendChild(elbl);eo.appendChild(extList);eo.appendChild(addExt);eo.appendChild(bottomRow);
         div.appendChild(eo);
+      }
 
       var lbIdx=lbItems.length;
       lbItems.push({cell:cell,imgUrl:imgUrl});
@@ -753,6 +809,10 @@ function renderGrid(){
       }
 
       rg.appendChild(div);
+      
+      if(IS_EDIT){
+          setTimeout(function(){ if(div.updateFill) div.updateFill(); }, 50);
+      }
     });
 
     rw.appendChild(rg);
