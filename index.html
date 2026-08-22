@@ -85,12 +85,17 @@ body.em .resize-handle{display:flex}
 .cell-bg{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;background-position:center;transition:transform .3s}
 .cell:hover .cell-bg{transform:scale(1.03)}
 body.em .cell:hover .cell-bg{transform:none}
+/* Красный фон в редакторе — показывает незаполненные края */
+body.em .cell{background:#cc2222!important}
+/* Зелёная галочка — картинка полностью заполняет ячейку */
+.fill-ok{position:absolute;top:5px;left:5px;background:rgba(0,180,0,.85);color:#fff;font-size:10px;padding:2px 7px;border-radius:3px;display:none;z-index:6;pointer-events:none}
+body.em .fill-ok{display:block}
 
 /* Cell drag feedback */
 .cell.cell-drag-over{outline:2px dashed #00a0ff;outline-offset:-2px}
 .cell.cell-dragging{opacity:.5}
 
-.cno{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:12px}
+.cno{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);font-size:12px}
 .ccap{position:absolute;bottom:0;left:0;right:0;padding:24px 10px 8px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-size:12px;font-weight:500;opacity:0;transition:opacity .2s;pointer-events:none;z-index:2}
 .cell:hover .ccap{opacity:1}
 .cnt-badge{position:absolute;bottom:9px;right:9px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;z-index:2}
@@ -111,6 +116,12 @@ body.em .ccap,.body.em .filmstrip{pointer-events:none;opacity:0!important}
 .eo-row{display:flex;align-items:center;gap:5px;margin-top:2px}
 .eo-label{font-size:10px;color:rgba(255,255,255,.5)}
 .eo-check{accent-color:#00a0ff}
+/* DRAG-BAR zoom */
+.zoom-row{display:flex;align-items:center;gap:6px;margin-top:4px}
+.zoom-bar-wrap{flex:1;height:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:3px;position:relative;cursor:ew-resize;user-select:none;touch-action:none}
+.zoom-bar-fill{height:100%;background:rgba(0,160,255,.45);border-radius:3px;pointer-events:none}
+.zoom-bar-icon{position:absolute;right:5px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.5);font-size:11px;pointer-events:none}
+.zoom-num{width:42px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:3px 5px;border-radius:3px;font-family:inherit;text-align:center}
 .extra-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .extra-item{position:relative;width:38px;height:38px;cursor:grab}
 .extra-item.drag-over{outline:2px dashed #00a0ff;outline-offset:1px}
@@ -164,36 +175,38 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
 
 /* Print */
 @media print{
-  @page{margin:15mm}
+  @page{margin:12mm}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 
-  /* Скрываем всё лишнее */
+  /* Скрываем лишнее */
   #etb,#addbar,.rctrl,.resize-handle,#loading,#lb,#nda-toast,.ceo,
-  .filmstrip,.cnt-badge,.hcv,.hpdf,footer,#lb-scroll-track{display:none!important}
+  .filmstrip,.cnt-badge,.hcv,.hpdf,footer,#lb-scroll-track,
+  .hlinks{display:none!important}
+
+  /* Показываем печатные контакты */
+  #print-bar{display:flex!important}
 
   body{background:#fff!important}
-  .layout{padding:0 10mm}
-  #rows-wrap{padding:6px 0;gap:4px}
-
-  /* Шапка — ссылки как текст */
-  .hlinks a{color:#333!important;text-decoration:none!important}
-  .hlinks a[href^="mailto"]::after{content:" " attr(href);font-size:9pt;color:#555}
-  .hlinks a[href^="https"]::after{content:" ↗";font-size:8pt;color:#888}
+  .layout{padding:0 8mm}
+  header{padding:10mm 0 6mm;border-bottom:1px solid #ddd}
 
   /* Строки и ячейки */
-  .rw{break-inside:avoid;page-break-inside:avoid}
+  .rw{break-inside:avoid;page-break-inside:avoid;margin-bottom:3px}
+  #rows-wrap{padding:4px 0;gap:3px}
   .rg{gap:3px!important}
-  .cell{overflow:visible!important}
-  .cell-bg{
-    position:absolute!important;inset:0!important;
-    background-size:cover!important;
-    -webkit-print-color-adjust:exact!important;
-    print-color-adjust:exact!important;
-  }
+  .cell-bg{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   .ccap{opacity:1!important}
+  .fill-ok{display:none!important}
+  body.em .cell{background:transparent!important}
 
-  /* Контакты в PDF внизу */
-  #print-contacts{display:block!important}
+  /* Footer на каждой странице */
+  #print-footer{
+    display:block!important;
+    position:fixed;bottom:0;left:0;right:0;
+    font-size:8pt;color:#888;text-align:center;
+    border-top:0.5pt solid #eee;padding:2mm 8mm;
+    background:#fff;
+  }
 }
 </style>
 </head>
@@ -237,6 +250,10 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
       </div>
       <div class="hlinks" id="hlinks"></div>
     </div>
+    <!-- Только для PDF: почта и телеграм чистым текстом -->
+    <div id="print-bar" style="display:none;font-size:12px;color:#444;margin-top:6px">
+      <span id="pb-email"></span><span id="pb-sep" style="margin:0 12px;color:#bbb">·</span><span id="pb-tg"></span>
+    </div>
   </header>
 
   <div id="rows-wrap"></div>
@@ -272,6 +289,11 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
 </div>
 
 <div id="nda-toast">🔒 NDA · Mariia Filippova — материалы защищены</div>
+
+<!-- PDF footer — повторяется на каждой странице -->
+<div id="print-footer" style="display:none">
+  <span id="pf-name"></span> &nbsp;·&nbsp; <span id="pf-email"></span> &nbsp;·&nbsp; <span id="pf-tg"></span>
+</div>
 
 <script>
 /* ══ CONFIG ══ */
@@ -352,6 +374,17 @@ function renderHeader(){
   lnk(S.asUrl,'ArtStation');
   if(S.tgUrl)lnk(S.tgUrl,'Telegram');
   if(S.cvUrl)lnk(gd(S.cvUrl),'↓ CV','hcv');
+  /* print-bar — только почта и телеграм как текст */
+  var pbEmail=document.getElementById('pb-email');
+  var pbTg=document.getElementById('pb-tg');
+  var pbSep=document.getElementById('pb-sep');
+  if(pbEmail) pbEmail.textContent=S.email||'';
+  if(pbTg) pbTg.textContent=S.tgUrl?S.tgUrl.replace('https://',''):'';
+  if(pbSep) pbSep.style.display=(S.email&&S.tgUrl)?'inline':'none';
+  /* pdf footer */
+  var pf=document.getElementById('pf-name');if(pf)pf.textContent=S.name||'';
+  var pe=document.getElementById('pf-email');if(pe)pe.textContent=S.email||'';
+  var pt=document.getElementById('pf-tg');if(pt)pt.textContent=S.tgUrl?S.tgUrl.replace('https://',''):'';
   if(!IS_EDIT){
     var pb=document.createElement('button');pb.className='hpdf';
     pb.textContent='📄 PDF';pb.onclick=dlPDF;hl.appendChild(pb);
@@ -500,32 +533,51 @@ function renderGrid(){
       /* caption */
       var cap=document.createElement('div');cap.className='ccap';cap.textContent=cell.caption||'';div.appendChild(cap);
 
+      /* fill-ok indicator — только в edit mode */
+      var fo=document.createElement('div');fo.className='fill-ok';
+      fo.textContent=(cell.url&&(cell.zoom||100)===100)?'✓ Заполнено':'';
+      div.appendChild(fo);
+
       /* edit overlay */
       if(IS_EDIT){
-        /* cell drag to swap */
-        div.setAttribute('draggable','true');
-        div.addEventListener('dragstart',function(e){
-          e.stopPropagation();
+        /* cell swap — через mousedown/mousemove, не HTML5 drag */
+        var swapActive=false,swapThreshold=8,swapStartX=0,swapStartY=0;
+        div.addEventListener('mousedown',function(e){
+          if(e.target.closest('.ceo')||e.target.closest('.zoom-bar-wrap')||e.target.closest('.zoom-num')) return;
+          swapActive=false;swapStartX=e.clientX;swapStartY=e.clientY;
           cellDragSrc={rowId:row.id,ci:ci};
-          setTimeout(function(){div.classList.add('cell-dragging');},0);
         });
-        div.addEventListener('dragend',function(){div.classList.remove('cell-dragging');cellDragSrc={rowId:null,ci:null};});
-        div.addEventListener('dragover',function(e){e.preventDefault();e.stopPropagation();div.classList.add('cell-drag-over');});
-        div.addEventListener('dragleave',function(){div.classList.remove('cell-drag-over');});
-        div.addEventListener('drop',function(e){
-          e.preventDefault();e.stopPropagation();div.classList.remove('cell-drag-over');
-          if(cellDragSrc.rowId===null)return;
-          var sRow=S.rows.find(function(r){return r.id===cellDragSrc.rowId;});
-          var dRow=S.rows.find(function(r){return r.id===row.id;});
-          if(!sRow||!dRow)return;
-          var sCell=sRow.cells[cellDragSrc.ci];
-          var dCell=dRow.cells[ci];
-          if(!sCell||!dCell)return;
-          var tmp=JSON.parse(JSON.stringify(sCell));
-          sRow.cells[cellDragSrc.ci]=JSON.parse(JSON.stringify(dCell));
-          dRow.cells[ci]=tmp;
+        div.addEventListener('mousemove',function(e){
+          if(!cellDragSrc.rowId) return;
+          if(!swapActive){
+            if(Math.abs(e.clientX-swapStartX)>swapThreshold||Math.abs(e.clientY-swapStartY)>swapThreshold){
+              swapActive=true;div.classList.add('cell-dragging');
+            }
+          }
+        });
+        div.addEventListener('mouseup',function(){
+          div.classList.remove('cell-dragging');
+          swapActive=false;
+        });
+        div.addEventListener('mouseenter',function(){
+          if(cellDragSrc.rowId&&(cellDragSrc.rowId!==row.id||cellDragSrc.ci!==ci)){
+            div.classList.add('cell-drag-over');
+          }
+        });
+        div.addEventListener('mouseleave',function(){div.classList.remove('cell-drag-over');});
+        div.addEventListener('mouseup',function(){
+          div.classList.remove('cell-drag-over');
+          if(cellDragSrc.rowId&&(cellDragSrc.rowId!==row.id||cellDragSrc.ci!==ci)){
+            var sRow=S.rows.find(function(r){return r.id===cellDragSrc.rowId;});
+            var dRow=S.rows.find(function(r){return r.id===row.id;});
+            if(sRow&&dRow&&sRow.cells[cellDragSrc.ci]&&dRow.cells[ci]){
+              var tmp=JSON.parse(JSON.stringify(sRow.cells[cellDragSrc.ci]));
+              sRow.cells[cellDragSrc.ci]=JSON.parse(JSON.stringify(dRow.cells[ci]));
+              dRow.cells[ci]=tmp;
+              renderGrid();
+            }
+          }
           cellDragSrc={rowId:null,ci:null};
-          renderGrid();
         });
 
         var eo=document.createElement('div');eo.className='ceo';
@@ -536,23 +588,48 @@ function renderGrid(){
         ci2.placeholder='Подпись...';ci2.value=cell.caption||'';
         ci2.onchange=function(){cell.caption=this.value;};
 
-        /* zoom slider */
+        /* zoom drag-bar */
         var zrow=document.createElement('div');zrow.className='zoom-row';
-        var zspan=document.createElement('span');zspan.className='zoom-lbl';zspan.textContent='Масштаб:';
-        var zsl=document.createElement('input');zsl.type='range';zsl.className='zoom-sl';
-        zsl.min=30;zsl.max=300;zsl.value=cell.zoom||100;
+        var zlbl=document.createElement('span');zlbl.className='zoom-lbl';zlbl.textContent='Масштаб:';
+        var zwrap=document.createElement('div');zwrap.className='zoom-bar-wrap';
+        var zfill=document.createElement('div');zfill.className='zoom-bar-fill';
+        var zicon=document.createElement('div');zicon.className='zoom-bar-icon';zicon.textContent='⟺';
+        zwrap.appendChild(zfill);zwrap.appendChild(zicon);
         var znum=document.createElement('input');znum.type='number';znum.className='zoom-num';
         znum.min=30;znum.max=300;znum.value=cell.zoom||100;
         var zpct=document.createElement('span');zpct.className='zoom-lbl';zpct.textContent='%';
+
         function applyZoom(val){
           cell.zoom=Math.min(300,Math.max(30,parseInt(val)||100));
-          zsl.value=cell.zoom;znum.value=cell.zoom;
+          znum.value=cell.zoom;
           bg.style.backgroundSize=cell.zoom===100?'cover':cell.zoom+'%';
+          var pct=(cell.zoom-30)/(300-30)*100;
+          zfill.style.width=pct+'%';
+          /* fill-ok индикатор */
+          var fo=div.querySelector('.fill-ok');
+          if(fo) fo.textContent=cell.zoom===100&&cell.url?'✓ Заполнено':'';
         }
-        zsl.addEventListener('input',function(){applyZoom(this.value);});
+        /* init fill bar */
+        var initPct=((cell.zoom||100)-30)/(300-30)*100;
+        zfill.style.width=initPct+'%';
+
+        /* drag on bar — mousedown+mousemove, не HTML5 drag */
+        zwrap.addEventListener('mousedown',function(e){
+          e.preventDefault();e.stopPropagation();
+          var startX=e.clientX,startVal=cell.zoom||100;
+          function onMove(ev){
+            var dx=ev.clientX-startX;
+            applyZoom(startVal+Math.round(dx*1.5));
+          }
+          function onUp(){ document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp); }
+          document.addEventListener('mousemove',onMove);
+          document.addEventListener('mouseup',onUp);
+        });
         znum.addEventListener('change',function(){applyZoom(this.value);});
         znum.addEventListener('input',function(){applyZoom(this.value);});
-        zrow.appendChild(zspan);zrow.appendChild(zsl);zrow.appendChild(znum);zrow.appendChild(zpct);
+        /* prevent drag starting from number input */
+        znum.addEventListener('mousedown',function(e){e.stopPropagation();});
+        zrow.appendChild(zlbl);zrow.appendChild(zwrap);zrow.appendChild(znum);zrow.appendChild(zpct);
         var frow=document.createElement('div');frow.className='eo-row';
         var fchk=document.createElement('input');fchk.type='checkbox';fchk.className='eo-check';
         fchk.checked=cell.showFilmstrip!==false;
