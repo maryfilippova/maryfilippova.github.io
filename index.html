@@ -164,9 +164,36 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
 
 /* Print */
 @media print{
-  #etb,#addbar,.rctrl,.resize-handle,#loading,#lb,#nda-toast,.ceo{display:none!important}
-  .layout{padding:0 20px}
-  #rows-wrap{padding:8px 0}
+  @page{margin:15mm}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+
+  /* Скрываем всё лишнее */
+  #etb,#addbar,.rctrl,.resize-handle,#loading,#lb,#nda-toast,.ceo,
+  .filmstrip,.cnt-badge,.hcv,.hpdf,footer,#lb-scroll-track{display:none!important}
+
+  body{background:#fff!important}
+  .layout{padding:0 10mm}
+  #rows-wrap{padding:6px 0;gap:4px}
+
+  /* Шапка — ссылки как текст */
+  .hlinks a{color:#333!important;text-decoration:none!important}
+  .hlinks a[href^="mailto"]::after{content:" " attr(href);font-size:9pt;color:#555}
+  .hlinks a[href^="https"]::after{content:" ↗";font-size:8pt;color:#888}
+
+  /* Строки и ячейки */
+  .rw{break-inside:avoid;page-break-inside:avoid}
+  .rg{gap:3px!important}
+  .cell{overflow:visible!important}
+  .cell-bg{
+    position:absolute!important;inset:0!important;
+    background-size:cover!important;
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
+  .ccap{opacity:1!important}
+
+  /* Контакты в PDF внизу */
+  #print-contacts{display:block!important}
 }
 </style>
 </head>
@@ -191,6 +218,7 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
     <span class="el">Email</span><input class="ei" id="eemail" style="width:170px">
     <span class="el">LinkedIn</span><input class="ei" id="eli" style="width:185px">
     <span class="el">ArtStation</span><input class="ei" id="eas" style="width:185px">
+    <span class="el">Telegram</span><input class="ei" id="etg" style="width:155px" placeholder="https://t.me/...">
     <span class="el">CV URL</span><input class="ei" id="ecv" style="width:185px" placeholder="Google Drive...">
     <div class="esp"></div>
     <button class="ebtn" style="background:#2a2a2a;color:#888" onclick="dlPDF()">📄 PDF</button>
@@ -257,7 +285,7 @@ var S = {
   line2:'Wargaming · Belgrade, Serbia', line3:'',
   email:'marybong13@gmail.com',
   liUrl:'https://linkedin.com/in/mariia-filippova-marybong',
-  asUrl:'https://artstation.com/marybong', cvUrl:'', rows:[]
+  asUrl:'https://artstation.com/marybong', tgUrl:'', cvUrl:'', rows:[]
 };
 
 var RC = {
@@ -271,6 +299,13 @@ function gd(url){
   if(!url)return '';
   var m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
   if(m)return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1200';
+  return url;
+}
+/* Полное качество для лайтбокса */
+function gdFull(url){
+  if(!url)return '';
+  var m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if(m)return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w3000';
   return url;
 }
 
@@ -315,6 +350,7 @@ function renderHeader(){
   lnk('mailto:'+S.email,'Email');
   lnk(S.liUrl,'LinkedIn');
   lnk(S.asUrl,'ArtStation');
+  if(S.tgUrl)lnk(S.tgUrl,'Telegram');
   if(S.cvUrl)lnk(gd(S.cvUrl),'↓ CV','hcv');
   if(!IS_EDIT){
     var pb=document.createElement('button');pb.className='hpdf';
@@ -610,17 +646,28 @@ function openLB(idx){
   lbCur=idx;
   var item=lbItems[idx];if(!item||!item.imgUrl)return;
   var cell=item.cell;
-  var allImgs=[{url:cell.url,caption:cell.caption}].concat(cell.images||[]).filter(function(x){return x&&x.url;});
   var curI=0;
+  /* дедублирование — убираем из extras URL совпадающий с main */
+  var allImgs=[{url:cell.url,caption:cell.caption}].concat(
+    (cell.images||[]).filter(function(x){return x&&x.url&&x.url!==cell.url;})
+  );
+
   function showI(i){
     curI=i;
     var lbImg=document.getElementById('lb-img');
     var lbScroll=document.getElementById('lb-scroll');
     var track=document.getElementById('lb-scroll-track');
     var thumb=document.getElementById('lb-scroll-thumb');
-    lbImg.src=gd(allImgs[i].url);
-    document.getElementById('lb-cap').textContent=allImgs[i].caption||'';
-    document.getElementById('lb-title').textContent=cell.caption||'';
+    /* полное качество для главной картинки лайтбокса */
+    lbImg.src=gdFull(allImgs[i].url);
+    /* текст — только один раз: заголовок ячейки + слайд-подпись если разные */
+    var title=cell.caption||'';
+    var slideCap=allImgs[i].caption||'';
+    document.getElementById('lb-title').textContent=title;
+    /* lb-cap только если подпись слайда отличается от заголовка */
+    var capEl=document.getElementById('lb-cap');
+    capEl.textContent=(slideCap&&slideCap!==title)?slideCap:'';
+    capEl.style.display=(slideCap&&slideCap!==title)?'block':'none';
     document.querySelectorAll('.lb-thumb').forEach(function(t,ti){t.classList.toggle('act',ti===i);});
     /* scroll track */
     lbImg.onload=function(){
@@ -752,6 +799,7 @@ function fillEditor(){
   document.getElementById('eemail').value=S.email||'';
   document.getElementById('eli').value=S.liUrl||'';
   document.getElementById('eas').value=S.asUrl||'';
+  document.getElementById('etg').value=S.tgUrl||'';
   document.getElementById('ecv').value=S.cvUrl||'';
 }
 function saveAll(){
@@ -762,6 +810,7 @@ function saveAll(){
   S.email=document.getElementById('eemail').value;
   S.liUrl=document.getElementById('eli').value;
   S.asUrl=document.getElementById('eas').value;
+  S.tgUrl=document.getElementById('etg').value;
   S.cvUrl=document.getElementById('ecv').value;
   renderHeader();flash('Сохраняю...',false);apiSave();
 }
