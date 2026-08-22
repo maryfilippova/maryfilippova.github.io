@@ -38,12 +38,14 @@ html,body{min-height:100vh;font-family:system-ui,sans-serif;background:#fff;colo
 .alink{padding:5px 10px;border:1px solid #333;border-radius:4px;font-size:11px;color:#888;text-decoration:none}
 .alink:hover{border-color:#00a0ff;color:#00a0ff}
 
-/* MAIN LAYOUT — всё внутри одного контейнера */
+/* MAIN LAYOUT */
 .layout{max-width:1320px;margin:0 auto;padding:0 40px 0 80px}
 
 /* HEADER */
 header{border-bottom:1px solid #eee;padding:22px 0 18px}
 .hrow{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+.hright{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.hcontacts{font-size:13px;color:#666}
 .hname{font-size:34px;font-weight:700;line-height:1.1}
 .hline{font-size:14px;color:#888;margin-top:3px}
 .hlinks{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding-top:4px}
@@ -51,13 +53,13 @@ header{border-bottom:1px solid #eee;padding:22px 0 18px}
 .hlinks a:hover,.hlinks button:hover{color:#1a1a1a}
 .hcv,.hpdf{padding:6px 14px;border:1px solid #ddd!important;border-radius:5px;color:#555!important;font-size:13px!important}
 
-/* GRID AREA — gap всегда 4px, не меняется */
+/* GRID AREA */
 #rows-wrap{display:flex;flex-direction:column;gap:4px;padding:12px 0 32px}
 
 /* ROW */
 .rw{position:relative}
 
-/* ROW CONTROLS — left margin, always visible in edit mode */
+/* ROW CONTROLS */
 .rctrl{position:absolute;left:-68px;top:0;bottom:0;width:60px;display:none;flex-direction:column;align-items:center;justify-content:center;gap:6px}
 body.em .rctrl{display:flex}
 .drag-grip{font-size:14px;color:#bbb;cursor:grab;padding:4px 7px;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:3px;user-select:none;line-height:1}
@@ -65,7 +67,7 @@ body.em .rctrl{display:flex}
 .del-row-btn{background:none;border:1px solid #fcc;color:#c00;border-radius:4px;font-size:10px;padding:2px 6px;cursor:pointer}
 .del-row-btn:hover{background:#fff0f0}
 
-/* RESIZE HANDLE — снизу строки */
+/* RESIZE HANDLE */
 .resize-handle{position:absolute;bottom:-8px;left:0;right:0;height:16px;display:none;align-items:center;justify-content:center;cursor:ns-resize;z-index:20}
 body.em .resize-handle{display:flex}
 .resize-bar{height:4px;width:50px;background:#ddd;border-radius:2px;transition:background .15s}
@@ -74,21 +76,18 @@ body.em .resize-handle{display:flex}
 /* ROW GRID */
 .rg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 
-/* CELLS — height set by grid-auto-rows, no aspect-ratio */
+/* CELLS */
 .cell{position:relative;overflow:hidden;background:#dde6ee;cursor:pointer}
 .sq{grid-column:span 1}
 .sp2{grid-column:span 2}
 .sp3{grid-column:span 3}
 .sp4{grid-column:span 4}
 
-/* Cell background div (replaces <img>) */
+/* Cell background div */
 .cell-bg{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;background-position:center;transition:transform .3s}
 .cell:hover .cell-bg{transform:scale(1.03)}
 body.em .cell:hover .cell-bg{transform:none}
-/* Красный фон в редакторе — показывает незаполненные края */
 body.em .cell{background:#cc2222!important}
-/* Зелёная галочка — картинка полностью заполняет ячейку */
-/* fill-ok теперь внутри оверлея, убираем абсолютное позиционирование */
 .fill-ok{display:inline-flex;align-items:center;gap:3px;background:rgba(0,180,0,.85);color:#fff;font-size:10px;padding:2px 7px;border-radius:3px;pointer-events:none;white-space:nowrap}
 
 /* Cell drag feedback */
@@ -116,22 +115,20 @@ body.em .ccap,.body.em .filmstrip{pointer-events:none;opacity:0!important}
 .eo-row{display:flex;align-items:center;gap:5px;margin-top:2px}
 .eo-label{font-size:10px;color:rgba(255,255,255,.5)}
 .eo-check{accent-color:#00a0ff}
-/* DRAG-BAR zoom */
-.zoom-row{display:flex;align-items:center;gap:6px;margin-top:4px}
-.zoom-bar-wrap{flex:1;height:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:3px;position:relative;cursor:ew-resize;user-select:none;touch-action:none}
-.zoom-bar-fill{height:100%;background:rgba(0,160,255,.45);border-radius:3px;pointer-events:none}
-.zoom-bar-icon{position:absolute;right:5px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.5);font-size:11px;pointer-events:none}
-.zoom-num{width:46px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:3px 5px;border-radius:3px;font-family:inherit;text-align:center;-moz-appearance:textfield}
-.zoom-num::-webkit-inner-spin-button,.zoom-num::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-/* Position bar */
+
+/* POS BAR */
 .pos-row{display:flex;align-items:center;gap:6px;margin-top:4px}
 .pos-bar-wrap{flex:1;height:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:3px;position:relative;cursor:ew-resize;user-select:none;touch-action:none}
 .pos-bar-thumb{position:absolute;top:2px;bottom:2px;width:14px;background:#00a0ff;border-radius:2px;transform:translateX(-50%);transition:left .05s;pointer-events:none}
 .pos-bar-icon{position:absolute;right:5px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);font-size:10px;pointer-events:none}
+.pos-reset-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:3px;font-size:12px;padding:1px 7px;cursor:pointer;flex-shrink:0;line-height:1.4}
+.pos-reset-btn:hover{background:rgba(0,160,255,.4)}
+
 .extra-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .extra-item{position:relative;width:38px;height:38px;cursor:grab}
 .extra-item.drag-over{outline:2px dashed #00a0ff;outline-offset:1px}
 .extra-item.dragging{opacity:.4}
+
 /* zoom slider */
 .zoom-row{display:flex;align-items:center;gap:6px;margin-top:4px}
 .zoom-sl{flex:1;accent-color:#00a0ff;cursor:pointer;height:16px}
@@ -139,7 +136,9 @@ body.em .ccap,.body.em .filmstrip{pointer-events:none;opacity:0!important}
 .zoom-lbl{font-size:10px;color:rgba(255,255,255,.5);white-space:nowrap}
 .extra-item .eibg{width:100%;height:100%;border-radius:2px;border:1px solid rgba(255,255,255,.3);background-size:cover;background-position:center}
 .extra-del{position:absolute;top:-5px;right:-5px;background:#e00;color:#fff;border:none;border-radius:50%;width:15px;height:15px;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.cclr{background:rgba(200,40,40,.75);color:#fff;border:none;border-radius:3px;font-size:10px;padding:2px 7px;cursor:pointer;margin-top:auto;align-self:flex-end}
+.cclr{background:rgba(200,40,40,.75);color:#fff;border:none;border-radius:3px;font-size:10px;padding:2px 7px;cursor:pointer;margin-top:auto;}
+.cdef{background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:3px;font-size:10px;padding:2px 7px;cursor:pointer;margin-top:auto;}
+.cdef:hover{background:rgba(255,255,255,.25);}
 
 /* ADD ROW */
 #addbar{display:none;padding:10px 0;gap:7px;flex-wrap:wrap;align-items:center}
@@ -160,7 +159,6 @@ body.em #addbar{display:flex}
 #lbx:hover{color:#fff}
 #lb-title{color:#fff;font-size:14px;font-weight:600;text-align:center}
 #lb-thumbs{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;max-width:80vw;align-items:center}
-/* 10-15% bigger than before (48→55px) */
 .lb-thumb{height:55px;width:auto;min-width:40px;max-width:110px;border-radius:3px;cursor:pointer;border:2px solid transparent;opacity:.6;transition:all .15s;object-fit:cover;display:block}
 .lb-thumb.act,.lb-thumb:hover{border-color:#fff;opacity:1}
 #lb-cap{color:#ccc;font-size:13px;text-align:center;max-width:70vw}
@@ -184,28 +182,38 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
   @page{margin:12mm}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 
-  /* Скрываем лишнее */
   #etb,#addbar,.rctrl,.resize-handle,#loading,#lb,#nda-toast,.ceo,
   .filmstrip,.cnt-badge,.hcv,.hpdf,footer,#lb-scroll-track,
   .hlinks{display:none!important}
 
-  /* Показываем печатные контакты */
-  #print-bar{display:flex!important}
+  .hright { align-items: flex-end; }
+  .hcontacts { font-size: 11pt; color: #444; }
 
   body{background:#fff!important}
   .layout{padding:0 8mm}
   header{padding:10mm 0 6mm;border-bottom:1px solid #ddd}
 
-  /* Строки и ячейки */
   .rw{break-inside:avoid;page-break-inside:avoid;margin-bottom:3px}
   #rows-wrap{padding:4px 0;gap:3px}
   .rg{gap:3px!important}
   .cell-bg{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   .ccap{opacity:1!important}
-  .fill-ok{display:none!important}
+  
+  /* Print img фикс cover */
+  .cell-print-img{
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+    -webkit-print-color-adjust:exact!important;
+  }
+  .cell-bg{display:none!important}
+  
+  .rg{display:grid!important;grid-template-columns:repeat(4,1fr)!important}
+  .cell{overflow:hidden!important; position:relative!important;}
+  .fill-ok,.cnt-badge{display:none!important}
   body.em .cell{background:transparent!important}
 
-  /* Footer на каждой странице */
   #print-footer{
     display:block!important;
     position:fixed;bottom:0;left:0;right:0;
@@ -244,7 +252,6 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
   </div>
 </div>
 
-<!-- ЕДИНЫЙ КОНТЕЙНЕР — шапка + сетка выровнены -->
 <div class="layout">
   <header>
     <div class="hrow">
@@ -254,11 +261,10 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
         <div class="hline" id="hline2"></div>
         <div class="hline" id="hline3"></div>
       </div>
-      <div class="hlinks" id="hlinks"></div>
-    </div>
-    <!-- Только для PDF: почта и телеграм чистым текстом -->
-    <div id="print-bar" style="display:none;font-size:12px;color:#444;margin-top:6px">
-      <span id="pb-email"></span><span id="pb-sep" style="margin:0 12px;color:#bbb">·</span><span id="pb-tg"></span>
+      <div class="hright">
+        <div class="hlinks" id="hlinks"></div>
+        <div class="hcontacts" id="hcontacts"></div>
+      </div>
     </div>
   </header>
 
@@ -296,7 +302,7 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
 
 <div id="nda-toast">🔒 NDA · Mariia Filippova — материалы защищены</div>
 
-<!-- PDF footer — повторяется на каждой странице -->
+<!-- PDF footer -->
 <div id="print-footer" style="display:none">
   <span id="pf-name"></span> &nbsp;·&nbsp; <span id="pf-email"></span> &nbsp;·&nbsp; <span id="pf-tg"></span>
 </div>
@@ -329,7 +335,6 @@ function gd(url){
   if(m)return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1200';
   return url;
 }
-/* Полное качество для лайтбокса */
 function gdFull(url){
   if(!url)return '';
   var m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
@@ -367,6 +372,7 @@ function renderHeader(){
     el.textContent=val;el.style.display=val?'':'none';
   });
   document.title=S.name||'Portfolio';
+  
   var hl=document.getElementById('hlinks');hl.innerHTML='';
   function lnk(href,label,cls){
     if(!href)return;
@@ -375,39 +381,37 @@ function renderHeader(){
     if(!href.startsWith('mailto'))a.target='_blank';
     hl.appendChild(a);
   }
-  lnk('mailto:'+S.email,'Email');
   lnk(S.liUrl,'LinkedIn');
   lnk(S.asUrl,'ArtStation');
-  if(S.tgUrl)lnk(S.tgUrl,'Telegram');
   if(S.cvUrl)lnk(gd(S.cvUrl),'↓ CV','hcv');
-  /* print-bar — только почта и телеграм как текст */
-  var pbEmail=document.getElementById('pb-email');
-  var pbTg=document.getElementById('pb-tg');
-  var pbSep=document.getElementById('pb-sep');
-  if(pbEmail) pbEmail.textContent=S.email||'';
-  if(pbTg) pbTg.textContent=S.tgUrl?S.tgUrl.replace('https://',''):'';
-  if(pbSep) pbSep.style.display=(S.email&&S.tgUrl)?'inline':'none';
-  /* pdf footer */
-  var pf=document.getElementById('pf-name');if(pf)pf.textContent=S.name||'';
-  var pe=document.getElementById('pf-email');if(pe)pe.textContent=S.email||'';
-  var pt=document.getElementById('pf-tg');if(pt)pt.textContent=S.tgUrl?S.tgUrl.replace('https://',''):'';
   if(!IS_EDIT){
     var pb=document.createElement('button');pb.className='hpdf';
     pb.textContent='📄 PDF';pb.onclick=dlPDF;hl.appendChild(pb);
   }
+
+  /* Почта и телега */
+  var hc=document.getElementById('hcontacts');
+  hc.innerHTML='';
+  var ct=[];
+  if(S.email) ct.push('Email: '+S.email);
+  if(S.tgUrl) ct.push('Telegram: '+S.tgUrl.replace('https://','').replace('t.me/',''));
+  hc.textContent = ct.join(' · ');
+
+  /* pdf footer */
+  var pf=document.getElementById('pf-name');if(pf)pf.textContent=S.name||'';
+  var pe=document.getElementById('pf-email');if(pe)pe.textContent=S.email||'';
+  var pt=document.getElementById('pf-tg');if(pt)pt.textContent=S.tgUrl?S.tgUrl.replace('https://',''):'';
 }
 
-/* CELL DRAG (swap images) */
+/* CELL DRAG */
 var cellDragSrc={rowId:null,ci:null};
-
 /* ROW DRAG */
 var rowDragId=null;
 
 function makeRowDraggable(rw,rowId,grip){
   var active=false;
-  grip.addEventListener('mousedown',function(){active=true;});
+  grip.addEventListener('mousedown',function(){active=true; rw.draggable=true;});
   document.addEventListener('mouseup',function(){active=false;rw.draggable=false;});
-
   rw.addEventListener('dragstart',function(e){
     if(!active){e.preventDefault();return;}
     rowDragId=rowId;e.dataTransfer.effectAllowed='move';
@@ -432,7 +436,6 @@ function makeRowDraggable(rw,rowId,grip){
   });
 }
 
-/* RESIZE HANDLE */
 function makeResizable(handle,row,rg){
   handle.addEventListener('mousedown',function(e){
     e.preventDefault();e.stopPropagation();
@@ -468,7 +471,6 @@ function renderGrid(){
 
     var rw=document.createElement('div');rw.className='rw';
 
-    /* row controls */
     if(IS_EDIT){
       var rc=document.createElement('div');rc.className='rctrl';
       var grip=document.createElement('span');grip.className='drag-grip';grip.textContent='⠿';grip.title='Перетащить строку';
@@ -480,7 +482,6 @@ function renderGrid(){
       makeRowDraggable(rw,row.id,grip);
     }
 
-    /* grid */
     var rg=document.createElement('div');rg.className='rg';
     rg.style.gridAutoRows=row.rowH+'px';
 
@@ -490,7 +491,6 @@ function renderGrid(){
       var div=document.createElement('div');div.className='cell '+sc(span);
       var imgUrl=gd(cell.url||'');
 
-      /* background div — prevents right-click save */
       var bg=document.createElement('div');bg.className='cell-bg';
       var zoomVal=cell.zoom||100;
       var posX=cell.posX!==undefined?cell.posX:50;
@@ -502,7 +502,6 @@ function renderGrid(){
       if(!imgUrl&&IS_EDIT){
         var ph=document.createElement('div');ph.className='cno';ph.textContent='Нет картинки';div.appendChild(ph);
       }
-      /* Invisible NDA img — when user right-clicks "Save image as", they get the NDA watermark */
       if(imgUrl&&!IS_EDIT){
         var ndaImg=document.createElement('img');
         ndaImg.src=NDA_SRC;
@@ -511,7 +510,6 @@ function renderGrid(){
         div.appendChild(ndaImg);
       }
 
-      /* filmstrip */
       var extras=(cell.images||[]).filter(function(x){return x&&x.url;});
       if(extras.length>0&&cell.showFilmstrip!==false&&!IS_EDIT){
         var fs=document.createElement('div');fs.className='filmstrip vis';
@@ -528,7 +526,6 @@ function renderGrid(){
           });
           fs.appendChild(ft);
         });
-        /* mouseleave на контейнере — не мерцает при переходе между превью */
         fs.addEventListener('mouseleave',function(){
           bg.style.backgroundImage=origUrl?'url('+origUrl+')':'';
           fs.querySelectorAll('.fs-item').forEach(function(x,xi){x.classList.toggle('act',xi===0);});
@@ -538,12 +535,18 @@ function renderGrid(){
         var badge=document.createElement('div');badge.className='cnt-badge';badge.textContent='⊞ '+(extras.length+1);div.appendChild(badge);
       }
 
-      /* caption */
       var cap=document.createElement('div');cap.className='ccap';cap.textContent=cell.caption||'';div.appendChild(cap);
 
-      /* edit overlay */
-      if(IS_EDIT){
-        /* cell swap — через mousedown/mousemove, не HTML5 drag */
+      /* print-only img */
+      var pimg = null;
+      if(imgUrl){
+        pimg=document.createElement('img');
+        pimg.src=imgUrl;pimg.alt='';
+        pimg.className='cell-print-img';
+        pimg.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:'+(posX)+'% center;display:none';
+        div.appendChild(pimg);
+      }
+
         var swapActive=false,swapThreshold=8,swapStartX=0,swapStartY=0;
         div.addEventListener('mousedown',function(e){
           if(e.target.closest('.ceo')||e.target.closest('.pos-bar-wrap')||e.target.closest('.zoom-num')) return;
@@ -591,7 +594,6 @@ function renderGrid(){
         ci2.placeholder='Подпись...';ci2.value=cell.caption||'';
         ci2.onchange=function(){cell.caption=this.value;};
 
-        /* zoom — только числовое поле */
         var zrow=document.createElement('div');zrow.className='zoom-row';
         var zlbl=document.createElement('span');zlbl.className='zoom-lbl';zlbl.textContent='Масштаб:';
         var znum=document.createElement('input');znum.type='number';znum.className='zoom-num';
@@ -612,7 +614,6 @@ function renderGrid(){
         },{passive:false});
         zrow.appendChild(zlbl);zrow.appendChild(znum);zrow.appendChild(zpct);
 
-        /* position drag-bar — двигает картинку влево/вправо */
         var prow=document.createElement('div');prow.className='pos-row';
         var plbl=document.createElement('span');plbl.className='zoom-lbl';plbl.textContent='Позиция:';
         var pwrap=document.createElement('div');pwrap.className='pos-bar-wrap';
@@ -624,6 +625,7 @@ function renderGrid(){
           cell.posX=Math.min(100,Math.max(0,Math.round(px)));
           pthumb.style.left=cell.posX+'%';
           bg.style.backgroundPosition=cell.posX+'% center';
+          if(pimg) pimg.style.objectPosition = cell.posX+'% center';
         }
         applyPos(cell.posX!==undefined?cell.posX:50);
 
@@ -641,6 +643,11 @@ function renderGrid(){
           document.addEventListener('mouseup',onUp);
         });
         prow.appendChild(plbl);prow.appendChild(pwrap);
+        var pReset=document.createElement('button');pReset.className='pos-reset-btn';
+        pReset.textContent='⊙';pReset.title='По центру';
+        pReset.addEventListener('mousedown',function(e){e.stopPropagation();});
+        pReset.onclick=function(){applyPos(50);};
+        prow.appendChild(pReset);
         var frow=document.createElement('div');frow.className='eo-row';
         var fchk=document.createElement('input');fchk.type='checkbox';fchk.className='eo-check';
         fchk.checked=cell.showFilmstrip!==false;
@@ -660,7 +667,6 @@ function renderGrid(){
             var xb=document.createElement('button');xb.className='extra-del';xb.textContent='×';
             (function(i){xb.onclick=function(e){e.stopPropagation();cell.images.splice(i,1);renderExtras();};})(xi);
 
-            /* drag reorder */
             it.addEventListener('dragstart',function(e){
               e.stopPropagation();dragIdx=xi;
               setTimeout(function(){it.classList.add('dragging');},0);
@@ -699,10 +705,7 @@ function renderGrid(){
             cell.images.push({url:this.value.trim()});this.value='';renderExtras();
           }
         };
-        var clr=document.createElement('button');clr.className='cclr';clr.textContent='✕ Очистить';
-        (function(c){clr.onclick=function(){c.url='';c.caption='';c.images=[];c.zoom=100;c.posX=50;renderGrid();};})(cell);
 
-        /* fill-ok рядом с кнопкой Очистить */
         var bottomRow=document.createElement('div');
         bottomRow.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:4px';
         var fo=document.createElement('div');fo.className='fill-ok';
@@ -713,14 +716,35 @@ function renderGrid(){
           fo.style.display=cell.url?'inline-flex':'none';
         }
         updateFillOk();
-        bottomRow.appendChild(fo);bottomRow.appendChild(clr);
+
+        var btnWrap=document.createElement('div');
+        btnWrap.style.display='flex';
+        btnWrap.style.gap='6px';
+
+        var cdef=document.createElement('button');
+        cdef.className='cdef';
+        cdef.textContent='⟲ Сброс настроек';
+        cdef.onclick=function(){
+          applyZoom(100);
+          applyPos(50);
+        };
+
+        var clr=document.createElement('button');
+        clr.className='cclr';
+        clr.textContent='✕ Очистить';
+        (function(c){clr.onclick=function(){c.url='';c.caption='';c.images=[];c.zoom=100;c.posX=50;renderGrid();};})(cell);
+
+        btnWrap.appendChild(cdef);
+        btnWrap.appendChild(clr);
+
+        bottomRow.appendChild(fo);
+        bottomRow.appendChild(btnWrap);
 
         eo.appendChild(ui);eo.appendChild(ci2);eo.appendChild(zrow);eo.appendChild(prow);eo.appendChild(frow);
         eo.appendChild(elbl);eo.appendChild(extList);eo.appendChild(addExt);eo.appendChild(bottomRow);
         div.appendChild(eo);
       }
 
-      /* lightbox click */
       var lbIdx=lbItems.length;
       lbItems.push({cell:cell,imgUrl:imgUrl});
       if(!IS_EDIT&&imgUrl){
@@ -732,7 +756,6 @@ function renderGrid(){
 
     rw.appendChild(rg);
 
-    /* resize handle */
     var rh=document.createElement('div');rh.className='resize-handle';
     var rb=document.createElement('div');rb.className='resize-bar';
     rh.appendChild(rb);rw.appendChild(rh);
@@ -749,7 +772,6 @@ function openLB(idx){
   var item=lbItems[idx];if(!item||!item.imgUrl)return;
   var cell=item.cell;
   var curI=0;
-  /* дедублирование — убираем из extras URL совпадающий с main */
   var allImgs=[{url:cell.url,caption:cell.caption}].concat(
     (cell.images||[]).filter(function(x){return x&&x.url&&x.url!==cell.url;})
   );
@@ -760,18 +782,14 @@ function openLB(idx){
     var lbScroll=document.getElementById('lb-scroll');
     var track=document.getElementById('lb-scroll-track');
     var thumb=document.getElementById('lb-scroll-thumb');
-    /* полное качество для главной картинки лайтбокса */
     lbImg.src=gdFull(allImgs[i].url);
-    /* текст — только один раз: заголовок ячейки + слайд-подпись если разные */
     var title=cell.caption||'';
     var slideCap=allImgs[i].caption||'';
     document.getElementById('lb-title').textContent=title;
-    /* lb-cap только если подпись слайда отличается от заголовка */
     var capEl=document.getElementById('lb-cap');
     capEl.textContent=(slideCap&&slideCap!==title)?slideCap:'';
     capEl.style.display=(slideCap&&slideCap!==title)?'block':'none';
     document.querySelectorAll('.lb-thumb').forEach(function(t,ti){t.classList.toggle('act',ti===i);});
-    /* scroll track */
     lbImg.onload=function(){
       lbScroll.scrollLeft=0;
       var ratio=lbScroll.clientWidth/lbScroll.scrollWidth;
@@ -818,13 +836,13 @@ document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight')navLB(1);
 });
 
-/* NDA: showToast — определяем первым */
+/* NDA: showToast */
 function showToast(){
   var t=document.getElementById('nda-toast');t.style.display='block';
   setTimeout(function(){t.style.display='none';},2500);
 }
 
-/* ── МАКСИМАЛЬНАЯ БЛОКИРОВКА Ctrl+S ── */
+/* BLOCK Ctrl+S */
 (function(){
   function blockSave(e){
     if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='S'||e.keyCode===83)){
@@ -859,13 +877,9 @@ var NDA_SRC='';
 /* Lightbox drag-scroll + NDA overlay */
 (function(){
   var lbScroll=document.getElementById('lb-scroll');
-
-  /* NDA overlay img — когда откроется лайтбокс, проставляем src */
   var lbNda=document.getElementById('lb-nda-img');
-  /* src ставится после инициализации NDA_SRC */
   setTimeout(function(){if(lbNda&&NDA_SRC)lbNda.src=NDA_SRC;},100);
 
-  /* drag-scroll */
   var isDown=false,startX=0,scrollLeft=0;
   lbScroll.addEventListener('mousedown',function(e){
     if(e.target.tagName==='IMG'&&e.target.id!=='lb-nda-img')return;
@@ -878,6 +892,7 @@ var NDA_SRC='';
     lbScroll.scrollLeft=scrollLeft-(x-startX);
   });
 })();
+
 function dlPDF(){
   if(!confirm('⚠️ NDA Notice\n\nThese materials are confidential and for review purposes only.\nBy downloading you agree not to distribute them.\n\nContinue?'))return;
   gtag('event','pdf_download',{event_category:'portfolio'});
