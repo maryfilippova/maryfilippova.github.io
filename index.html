@@ -141,14 +141,10 @@ body.em .ccap,.body.em .filmstrip{pointer-events:none;opacity:0!important}
 .zoom-num{
   width:46px; background:rgba(0,0,0,.7); border:1px solid rgba(255,255,255,.25); 
   color:#fff; font-size:11px; padding:3px 5px; border-radius:3px; font-family:inherit; text-align:center;
-  -moz-appearance: textfield; /* Hides arrows in Firefox */
+  -moz-appearance: textfield; 
 }
-/* Hides arrows in Chrome/Safari/Edge */
 .zoom-num::-webkit-outer-spin-button,
-.zoom-num::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+.zoom-num::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .zoom-lbl{font-size:10px;color:rgba(255,255,255,.5);white-space:nowrap}
 .extra-item .eibg{width:100%;height:100%;border-radius:2px;border:1px solid rgba(255,255,255,.3);background-size:cover;background-position:center}
 .extra-del{position:absolute;top:-5px;right:-5px;background:#e00;color:#fff;border:none;border-radius:50%;width:15px;height:15px;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
@@ -193,44 +189,55 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
 /* No select */
 .cell-bg,.fs-item,.lb-thumb{-webkit-user-select:none;user-select:none}
 
-/* Print */
+/* Print Configuration */
 @media print{
-  @page{margin:12mm}
+  /* margin:0 убирает дефолтные колонтитулы браузера (дату, URL) */
+  @page { margin: 0; size: A4 portrait; }
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 
-  #etb,#addbar,.rctrl,.resize-handle,#loading,#lb,#nda-toast,.ceo,
-  .filmstrip,.cnt-badge,.hcv,.hpdf,footer,#lb-scroll-track,
-  .hlinks{display:none!important}
+  body { background:#fff!important; margin: 0 !important; padding: 0 !important; }
+  
+  /* Наши кастомные отступы внутри контента */
+  .layout { padding: 12mm 16mm 0 16mm !important; }
+  header { padding: 8mm 0 6mm !important; border-bottom: 1px solid #ddd; margin-bottom: 6px; }
+
+  /* Прячем весь интерфейс */
+  #etb, #addbar, .rctrl, .resize-handle, #loading, #lb, #nda-toast, .ceo,
+  .filmstrip, .cnt-badge, .hcv, .hpdf, footer, #lb-scroll-track,
+  .hlinks { display: none !important; }
 
   .hright { align-items: flex-end; }
   .hcontacts { font-size: 11pt; color: #444; }
 
-  body{background:#fff!important}
-  .layout{padding:0 8mm}
-  header{padding:10mm 0 6mm;border-bottom:1px solid #ddd}
-
-  .rw{break-inside:avoid;page-break-inside:avoid;margin-bottom:4px!important}
-  #rows-wrap{padding:4px 0;gap:4px}
-  .rg{gap:4px!important; display:grid!important; grid-template-columns:repeat(4,1fr)!important;}
+  /* ЖЕЛЕЗОБЕТОННАЯ СЕТКА */
+  .rw { break-inside: avoid; page-break-inside: avoid; margin-bottom: 4px !important; }
+  #rows-wrap { padding: 4px 0; gap: 4px; }
+  .rg { gap: 4px !important; display: grid !important; grid-template-columns: repeat(4, 1fr) !important; height: 100% !important; }
   
-  /* Идеальный рендер фонов на печати */
-  .cell-bg{
-    display:block!important;
-    position:absolute!important; inset:0!important;
-    -webkit-print-color-adjust:exact!important;
-    print-color-adjust:exact!important;
+  .cell { overflow: hidden !important; position: relative !important; background: transparent !important; }
+  
+  /* Идеальный рендер картинок на печати */
+  .cell-print-img {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    -webkit-print-color-adjust: exact !important;
   }
+  .cell-bg { display: none !important; }
   
-  .cell{overflow:hidden!important; position:relative!important; background:transparent!important;}
-  .ccap{opacity:1!important}
-  .fill-ok,.cnt-badge{display:none!important}
+  /* Фиксация подписи в PDF */
+  .ccap { opacity: 1 !important; position: absolute !important; bottom: 0 !important; left: 0 !important; right: 0 !important; }
+  .fill-ok, .cnt-badge { display: none !important; }
 
-  #print-footer{
-    display:block!important;
-    position:fixed;bottom:0;left:0;right:0;
-    font-size:8pt;color:#888;text-align:center;
-    border-top:0.5pt solid #eee;padding:2mm 8mm;
-    background:#fff;
+  #print-footer {
+    display: block !important;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    font-size: 8pt; color: #888; text-align: center;
+    border-top: 0.5pt solid #eee; padding: 4mm 8mm;
+    background: #fff;
   }
 }
 </style>
@@ -259,7 +266,8 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
     <span class="el">Telegram</span><input class="ei" id="etg" style="width:155px" placeholder="https://t.me/...">
     <span class="el">CV URL</span><input class="ei" id="ecv" style="width:185px" placeholder="Google Drive...">
     <div class="esp"></div>
-    <button class="ebtn" style="background:#2a2a2a;color:#888" onclick="dlPDF()">📄 PDF</button>
+    <!-- Обновленная кнопка в редакторе -->
+    <button class="ebtn" style="background:#2a2a2a;color:#888" onclick="dlPDF()">↓ Portfolio PDF</button>
   </div>
 </div>
 
@@ -397,7 +405,8 @@ function renderHeader(){
   if(S.cvUrl)lnk(gd(S.cvUrl),'↓ CV','hcv');
   if(!IS_EDIT){
     var pb=document.createElement('button');pb.className='hpdf';
-    pb.textContent='📄 PDF';pb.onclick=dlPDF;hl.appendChild(pb);
+    // Обновленная кнопка
+    pb.textContent='↓ Portfolio PDF';pb.onclick=dlPDF;hl.appendChild(pb);
   }
 
   var hc=document.getElementById('hcontacts');
@@ -406,7 +415,6 @@ function renderHeader(){
     var ct=[];
     if(S.email) ct.push('Email: '+S.email);
     if(S.tgUrl) {
-      // Аккуратно формируем ссылку на Telegram, добавляя @
       var cleanTg = S.tgUrl.replace(/https?:\/\//,'').replace('t.me/','').replace('@','');
       ct.push('Telegram: @' + cleanTg);
     }
@@ -449,7 +457,7 @@ function makeRowDraggable(rw,rowId,grip){
   });
 }
 
-function makeResizable(handle,row,rg){
+function makeResizable(handle,row,rg,rw){
   handle.addEventListener('mousedown',function(e){
     e.preventDefault();e.stopPropagation();
     handle.classList.add('active');
@@ -458,6 +466,8 @@ function makeResizable(handle,row,rg){
     function onMove(e){
       var dy=e.clientY-startY;
       row.rowH=Math.max(60,Math.min(800,startH+dy));
+      // Обновляем высоту и контейнера и грида
+      rw.style.height=row.rowH+'px';
       rg.style.gridAutoRows=row.rowH+'px';
       
       if(IS_EDIT){
@@ -531,8 +541,12 @@ function renderGrid(){
     if(!row.cells)row.cells=[];
 
     var rw=document.createElement('div');rw.className='rw';
+    // ЯВНАЯ ФИКСАЦИЯ ВЫСОТЫ ДЛЯ ИДЕАЛЬНОГО PDF
+    rw.style.height = row.rowH + 'px';
+
     var rg=document.createElement('div');rg.className='rg';
     rg.style.gridAutoRows=row.rowH+'px';
+    rg.style.height='100%'; // Грид заполняет жестко заданную строку
 
     if(IS_EDIT){
       var rc=document.createElement('div');rc.className='rctrl';
@@ -545,6 +559,8 @@ function renderGrid(){
       sqBtn.onclick=function(){
           var colW = (rg.clientWidth - 12) / 4;
           row.rowH = Math.round(colW);
+          // Обновляем высоту и контейнера и грида
+          rw.style.height = row.rowH + 'px';
           rg.style.gridAutoRows = row.rowH + 'px';
           rg.querySelectorAll('.cell').forEach(function(c){ if(c.updateFill) c.updateFill(); });
       };
@@ -611,6 +627,17 @@ function renderGrid(){
 
       var cap=document.createElement('div');cap.className='ccap';cap.textContent=cell.caption||'';div.appendChild(cap);
 
+      /* ПЕЧАТНАЯ КАРТИНКА (сохраняет масштаб и позицию для PDF) */
+      var pimg = null;
+      if(imgUrl){
+        pimg=document.createElement('img');
+        pimg.src=imgUrl;pimg.alt='';
+        pimg.className='cell-print-img';
+        var scaleVal = (cell.zoom||100)/100;
+        pimg.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:'+(posX)+'% center;display:none; transform:scale('+scaleVal+'); transform-origin: center center;';
+        div.appendChild(pimg);
+      }
+
       if(IS_EDIT){
         var swapActive=false,swapThreshold=8,swapStartX=0,swapStartY=0;
         div.addEventListener('mousedown',function(e){
@@ -668,6 +695,7 @@ function renderGrid(){
           cell.zoom=Math.min(300,Math.max(30,parseInt(val)||100));
           znum.value=cell.zoom;
           bg.style.backgroundSize=cell.zoom===100?'cover':cell.zoom+'%';
+          if(pimg) pimg.style.transform = 'scale('+(cell.zoom/100)+')'; // Обновляем печатную версию
           if(div.updateFill) div.updateFill();
         }
         znum.addEventListener('change',function(){applyZoom(this.value);});
@@ -690,6 +718,7 @@ function renderGrid(){
           cell.posX=Math.min(100,Math.max(0,Math.round(px)));
           pthumb.style.left=cell.posX+'%';
           bg.style.backgroundPosition=cell.posX+'% center';
+          if(pimg) pimg.style.objectPosition = cell.posX+'% center'; // Обновляем печатную версию
         }
         applyPos(cell.posX!==undefined?cell.posX:50);
 
@@ -820,7 +849,7 @@ function renderGrid(){
     var rh=document.createElement('div');rh.className='resize-handle';
     var rb=document.createElement('div');rb.className='resize-bar';
     rh.appendChild(rb);rw.appendChild(rh);
-    if(IS_EDIT)makeResizable(rh,row,rg);
+    if(IS_EDIT)makeResizable(rh,row,rg,rw);
 
     wrap.appendChild(rw);
   });
