@@ -79,8 +79,8 @@ body.em .resize-handle{display:flex}
 .sq{aspect-ratio:1/1}.sp2{grid-column:span 2;aspect-ratio:2/1}.sp3{grid-column:span 3;aspect-ratio:3/1}.sp4{grid-column:span 4;aspect-ratio:4/1}
 
 /* Cell background div (replaces <img>) */
-.cell-bg{position:absolute;inset:0;background-size:contain;background-repeat:no-repeat;background-position:center;background-color:#111;transition:transform .3s}
-.cell:hover .cell-bg{transform:scale(1.02)}
+.cell-bg{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;background-position:center;transition:transform .3s}
+.cell:hover .cell-bg{transform:scale(1.03)}
 
 /* Cell drag feedback */
 .cell.cell-drag-over{outline:2px dashed #00a0ff;outline-offset:-2px}
@@ -111,6 +111,10 @@ body.em .ccap,.body.em .filmstrip{pointer-events:none;opacity:0!important}
 .extra-item{position:relative;width:38px;height:38px;cursor:grab}
 .extra-item.drag-over{outline:2px dashed #00a0ff;outline-offset:1px}
 .extra-item.dragging{opacity:.4}
+/* zoom slider */
+.zoom-row{display:flex;align-items:center;gap:6px;margin-top:4px}
+.zoom-sl{flex:1;accent-color:#00a0ff;cursor:pointer;height:4px}
+.zoom-lbl{font-size:10px;color:rgba(255,255,255,.5);white-space:nowrap;min-width:34px;text-align:right}
 .extra-item .eibg{width:100%;height:100%;border-radius:2px;border:1px solid rgba(255,255,255,.3);background-size:cover;background-position:center}
 .extra-del{position:absolute;top:-5px;right:-5px;background:#e00;color:#fff;border:none;border-radius:50%;width:15px;height:15px;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .cclr{background:rgba(200,40,40,.75);color:#fff;border:none;border-radius:3px;font-size:10px;padding:2px 7px;cursor:pointer;margin-top:auto;align-self:flex-end}
@@ -129,7 +133,7 @@ body.em #addbar{display:flex}
 #lbx{position:fixed;top:14px;right:18px;background:none;border:none;color:#888;font-size:28px;cursor:pointer;line-height:1;z-index:10}
 #lbx:hover{color:#fff}
 #lb-title{color:#fff;font-size:14px;font-weight:600;text-align:center}
-#lb-thumbs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;max-width:80vw}
+#lb-thumbs{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;max-width:80vw;align-items:center}
 /* 10-15% bigger than before (48→55px) */
 .lb-thumb{height:55px;width:auto;min-width:40px;max-width:110px;border-radius:3px;cursor:pointer;border:2px solid transparent;opacity:.6;transition:all .15s;object-fit:cover;display:block}
 .lb-thumb.act,.lb-thumb:hover{border-color:#fff;opacity:1}
@@ -399,11 +403,12 @@ function renderGrid(){
       if(ci>=cfg.cells)return;
       var span=cfg.spans[ci]||1;
       var div=document.createElement('div');div.className='cell '+sc(span);
-
       var imgUrl=gd(cell.url||'');
 
-      /* background div instead of <img> — prevents right-click save */
+      /* background div — prevents right-click save */
       var bg=document.createElement('div');bg.className='cell-bg';
+      var zoomVal=cell.zoom||100;
+      bg.style.backgroundSize=zoomVal===100?'cover':zoomVal+'%';
       if(imgUrl)bg.style.backgroundImage='url('+imgUrl+')';
       div.appendChild(bg);
 
@@ -483,6 +488,19 @@ function renderGrid(){
         var ci2=document.createElement('input');ci2.className='cin';
         ci2.placeholder='Подпись...';ci2.value=cell.caption||'';
         ci2.onchange=function(){cell.caption=this.value;};
+
+        /* zoom slider */
+        var zrow=document.createElement('div');zrow.className='zoom-row';
+        var zspan=document.createElement('span');zspan.className='eo-label';zspan.textContent='Масштаб:';
+        var zsl=document.createElement('input');zsl.type='range';zsl.className='zoom-sl';
+        zsl.min=30;zsl.max=300;zsl.value=cell.zoom||100;
+        var zlbl=document.createElement('span');zlbl.className='zoom-lbl';zlbl.textContent=(cell.zoom||100)+'%';
+        zsl.oninput=function(){
+          cell.zoom=parseInt(this.value);
+          zlbl.textContent=cell.zoom+'%';
+          bg.style.backgroundSize=cell.zoom===100?'cover':cell.zoom+'%';
+        };
+        zrow.appendChild(zspan);zrow.appendChild(zsl);zrow.appendChild(zlbl);
         var frow=document.createElement('div');frow.className='eo-row';
         var fchk=document.createElement('input');fchk.type='checkbox';fchk.className='eo-check';
         fchk.checked=cell.showFilmstrip!==false;
@@ -543,7 +561,7 @@ function renderGrid(){
         };
         var clr=document.createElement('button');clr.className='cclr';clr.textContent='✕ Очистить';
         (function(c){clr.onclick=function(){c.url='';c.caption='';c.images=[];renderGrid();};})(cell);
-        eo.appendChild(ui);eo.appendChild(ci2);eo.appendChild(frow);
+        eo.appendChild(ui);eo.appendChild(ci2);eo.appendChild(zrow);eo.appendChild(frow);
         eo.appendChild(elbl);eo.appendChild(extList);eo.appendChild(addExt);eo.appendChild(clr);
         div.appendChild(eo);
       }
