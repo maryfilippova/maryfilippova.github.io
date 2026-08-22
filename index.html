@@ -391,11 +391,13 @@ function renderHeader(){
 
   /* Почта и телега */
   var hc=document.getElementById('hcontacts');
-  hc.innerHTML='';
-  var ct=[];
-  if(S.email) ct.push('Email: '+S.email);
-  if(S.tgUrl) ct.push('Telegram: '+S.tgUrl.replace('https://','').replace('t.me/',''));
-  hc.textContent = ct.join(' · ');
+  if(hc){
+    hc.innerHTML='';
+    var ct=[];
+    if(S.email) ct.push('Email: '+S.email);
+    if(S.tgUrl) ct.push('Telegram: '+S.tgUrl.replace('https://','').replace('t.me/',''));
+    hc.textContent = ct.join(' · ');
+  }
 
   /* pdf footer */
   var pf=document.getElementById('pf-name');if(pf)pf.textContent=S.name||'';
@@ -743,7 +745,6 @@ function renderGrid(){
         eo.appendChild(ui);eo.appendChild(ci2);eo.appendChild(zrow);eo.appendChild(prow);eo.appendChild(frow);
         eo.appendChild(elbl);eo.appendChild(extList);eo.appendChild(addExt);eo.appendChild(bottomRow);
         div.appendChild(eo);
-      }
 
       var lbIdx=lbItems.length;
       lbItems.push({cell:cell,imgUrl:imgUrl});
