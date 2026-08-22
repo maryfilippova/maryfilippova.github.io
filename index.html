@@ -3,160 +3,228 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<meta name="googlebot" content="noindex,nofollow">
+<meta name="description" content="">
 <title>Portfolio</title>
+
+<!-- Microsoft Clarity -->
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window,document,"clarity","script","y68zizkq9o");
+</script>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RYJHBRTT6P"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-RYJHBRTT6P');
+</script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100vh;font-family:system-ui,sans-serif;background:#fff;color:#1a1a1a}
 
-/* LOADING */
+/* ── LOADING ── */
 #loading{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:12px}
 #loading p{font-size:13px;color:#999}
 .spinner{width:28px;height:28px;border:2px solid #eee;border-top-color:#00a0ff;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* EDIT TOOLBAR */
-#etb{display:none;background:#111;padding:10px 16px;position:sticky;top:0;z-index:90;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid #333}
+/* ── EDIT TOOLBAR ── */
+#etb{display:none;background:#111;padding:0;position:sticky;top:0;z-index:90;flex-direction:column;border-bottom:1px solid #222}
+.etb-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 14px;border-bottom:1px solid #1a1a1a}
+.etb-row:last-child{border-bottom:none}
 .el{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#555;white-space:nowrap}
-.ei{background:#1e1e1e;border:1px solid #333;color:#ccc;padding:5px 8px;border-radius:4px;font-size:12px;font-family:inherit;outline:none}
+.ei{background:#1e1e1e;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font-size:12px;font-family:inherit;outline:none}
 .ei:focus{border-color:#00a0ff}
+.esp{flex:1}
 .efl{font-size:11px;color:#3FB950;opacity:0;transition:opacity .3s}
 .efl.on{opacity:1}.efl.err{color:#f85149;opacity:1}
-.ebtn{padding:6px 14px;border:none;border-radius:4px;font-size:12px;font-family:inherit;cursor:pointer}
+.ebtn{padding:5px 12px;border:none;border-radius:4px;font-size:12px;font-family:inherit;cursor:pointer}
 .esave{background:#00a0ff;color:#fff}.eexit{background:#2a2a2a;color:#888}
 .esave:hover{background:#0088dd}.eexit:hover{color:#fff}
-.esp{flex:1}
-.gdnote{font-size:11px;color:#f0a030;background:#2a1e00;padding:4px 10px;border-radius:4px;border:1px solid #6a4000}
+.alink{padding:5px 10px;border:1px solid #333;border-radius:4px;font-size:11px;color:#888;text-decoration:none;white-space:nowrap}
+.alink:hover{border-color:#00a0ff;color:#00a0ff}
+.epdf{padding:5px 12px;border:1px solid #444;border-radius:4px;font-size:11px;color:#aaa;background:#1e1e1e;cursor:pointer}
+.epdf:hover{border-color:#00a0ff;color:#00a0ff}
 
-/* HEADER */
-header{padding:28px 60px 22px;border-bottom:1px solid #eee;max-width:1200px;margin:0 auto}
-.hrow{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:6px}
-.hname{font-size:38px;font-weight:700;white-space:nowrap;line-height:1}
-.hdesc{font-size:15px;color:#999;margin-top:2px}
-.hlinks{display:flex;gap:20px;align-items:center;flex-wrap:nowrap}
-.hlinks a{font-size:15px;color:#666;text-decoration:none;white-space:nowrap}
+/* ── HEADER ── */
+header{padding:22px 40px 18px;border-bottom:1px solid #eee}
+.hrow{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+.hleft{}
+.hname{font-size:36px;font-weight:700;white-space:nowrap;line-height:1.1}
+.hline{font-size:14px;color:#888;margin-top:3px}
+.hlinks{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding-top:4px}
+.hlinks a{font-size:14px;color:#666;text-decoration:none;white-space:nowrap}
 .hlinks a:hover{color:#1a1a1a}
-.hcv{font-size:14px;padding:7px 16px;border:1.5px solid #ddd;border-radius:6px;color:#555}
+.hcv{font-size:13px;padding:6px 14px;border:1px solid #ddd;border-radius:5px;color:#555}
 .hcv:hover{border-color:#bbb;color:#1a1a1a}
+.hpdf{font-size:13px;padding:6px 14px;border:1px solid #ddd;border-radius:5px;color:#555;background:none;cursor:pointer}
+.hpdf:hover{border-color:#bbb;color:#1a1a1a}
 
-/* GRID WRAPPER — centered with margins */
-.gwrap{
-  max-width:1200px;
-  margin:0 auto;
-  padding:16px 60px 40px 100px; /* extra left for controls */
-}
-
-/* ROW */
+/* ── GRID ── */
+.gwrap{padding:14px 40px 40px 90px;max-width:1360px;margin:0 auto}
 .rw{position:relative;margin-bottom:4px}
 .rw.drag-over{outline:2px dashed #00a0ff;outline-offset:2px}
 .rw.dragging{opacity:.4}
 
-/* ROW CONTROLS — in left margin, visible on hover in edit mode */
-.rctrl{
-  position:absolute;
-  left:-76px;
-  top:50%;
-  transform:translateY(-50%);
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  gap:5px;
-}
-body.em .rw:hover .rctrl{display:flex}
-.drag-h{
-  font-size:18px;color:#bbb;cursor:grab;line-height:1;
-  padding:4px 6px;border-radius:4px;background:#f0f0f0;
-  user-select:none;
-}
+/* ── ROW CONTROLS (always visible in edit mode) ── */
+.rctrl{position:absolute;left:-80px;top:0;bottom:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:72px}
+body.em .rctrl{display:flex}
+.drag-h{font-size:16px;color:#ccc;cursor:grab;padding:4px 8px;border-radius:4px;background:#f5f5f5;border:1px solid #e0e0e0;user-select:none;line-height:1}
 .drag-h:active{cursor:grabbing}
-.del-row-btn{
-  background:none;border:1px solid #e0b0b0;color:#e00;
-  border-radius:4px;font-size:11px;padding:3px 7px;cursor:pointer;
-  white-space:nowrap;
-}
-.del-row-btn:hover{background:#fff0f0;border-color:#e00}
+.del-row-btn{background:none;border:1px solid #f0c0c0;color:#c00;border-radius:4px;font-size:10px;padding:3px 6px;cursor:pointer;white-space:nowrap}
+.del-row-btn:hover{background:#fff0f0}
+.size-btns{display:flex;gap:2px}
+.sz-btn{background:#f5f5f5;border:1px solid #ddd;color:#888;border-radius:3px;font-size:10px;padding:2px 5px;cursor:pointer}
+.sz-btn:hover,.sz-btn.on{background:#00a0ff;border-color:#00a0ff;color:#fff}
 
-/* ROW GRID */
+/* ── ROW GRID ── */
 .rg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 
-/* CELLS */
+/* ── CELLS ── */
 .cell{position:relative;overflow:hidden;background:#dde6ee;cursor:pointer}
 .sq{aspect-ratio:1/1}
 .sp2{grid-column:span 2;aspect-ratio:2/1}
 .sp3{grid-column:span 3;aspect-ratio:3/1}
 .sp4{grid-column:span 4;aspect-ratio:4/1}
-.cell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
-.cell:hover img{transform:scale(1.03)}
-.ccap{position:absolute;bottom:0;left:0;right:0;padding:22px 12px 8px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-size:12px;font-weight:500;opacity:0;transition:opacity .2s;pointer-events:none}
-.cell:hover .ccap{opacity:1}
+.cell img.main-img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .15s}
+.cell:hover .main-img{opacity:.95}
 .cno{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:12px}
 
-/* EDIT OVERLAY on cells */
-.ceo{position:absolute;inset:0;background:rgba(0,0,0,.55);display:none;flex-direction:column;gap:5px;padding:8px}
+/* ── CAPTION ── */
+.ccap{position:absolute;bottom:0;left:0;right:0;padding:26px 12px 8px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-size:12px;font-weight:500;opacity:0;transition:opacity .2s;pointer-events:none;z-index:2}
+.cell:hover .ccap{opacity:1}
+.cnt-badge{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;pointer-events:none;z-index:2;display:none}
+
+/* ── FILMSTRIP (hover preview) ── */
+.filmstrip{position:absolute;bottom:30px;left:0;right:0;display:none;justify-content:center;gap:3px;padding:0 12px;z-index:3;pointer-events:all}
+.filmstrip.visible{display:flex}
+.fs-item{height:20px;border-radius:2px;border:1.5px solid rgba(255,255,255,.7);flex-shrink:0;cursor:pointer;transition:border-color .1s,opacity .1s;opacity:.6}
+.fs-item:hover,.fs-item.act{border-color:#fff;opacity:1}
+/* widths depend on cell span - calculated in JS */
+
+/* ── EDIT OVERLAY ── */
+.ceo{position:absolute;inset:0;background:rgba(0,0,0,.6);display:none;flex-direction:column;gap:4px;padding:8px;z-index:10;overflow-y:auto}
 body.em .ceo{display:flex}
-body.em .ccap{display:none}
-body.em .cell:hover img{transform:none}
-.cin{background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:11px;padding:4px 7px;border-radius:3px;width:100%;font-family:inherit;outline:none}
+body.em .ccap,.body.em .filmstrip{display:none!important}
+.cin{background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:4px 7px;border-radius:3px;width:100%;font-family:inherit;outline:none}
 .cin:focus{border-color:#00a0ff}
 .cin::placeholder{color:rgba(255,255,255,.3)}
-.cclr{align-self:flex-end;background:rgba(200,40,40,.7);color:#fff;border:none;border-radius:3px;font-size:10px;padding:2px 7px;cursor:pointer;margin-top:auto}
-.cclr:hover{background:#c00}
+.eo-row{display:flex;gap:4px;align-items:center;margin-top:4px}
+.eo-label{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:1px}
+.eo-check{accent-color:#00a0ff}
+.img-add-btn{background:rgba(255,255,255,.1);border:1px dashed rgba(255,255,255,.3);color:#fff;font-size:11px;padding:3px 8px;border-radius:3px;cursor:pointer;flex-shrink:0}
+.img-add-btn:hover{background:rgba(0,160,255,.3)}
+.extra-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.extra-item{position:relative;width:36px;height:36px}
+.extra-item img{width:100%;height:100%;object-fit:cover;border-radius:2px;border:1px solid rgba(255,255,255,.3)}
+.extra-del{position:absolute;top:-4px;right:-4px;background:#e00;color:#fff;border:none;border-radius:50%;width:14px;height:14px;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cclr{background:rgba(200,40,40,.7);color:#fff;border:none;border-radius:3px;font-size:10px;padding:2px 6px;cursor:pointer;margin-top:auto;align-self:flex-end}
 
-/* ADD ROW BAR */
-#addbar{display:none;padding:10px 60px 10px 100px;background:#f7f7f7;border-top:1px solid #eee;gap:8px;flex-wrap:wrap;align-items:center;max-width:1200px;margin:0 auto}
+/* ── ADD ROW ── */
+#addbar{display:none;padding:10px 40px 10px 90px;background:#f7f7f7;border-top:1px solid #eee;gap:7px;flex-wrap:wrap;align-items:center;max-width:1360px;margin:0 auto}
 body.em #addbar{display:flex}
 .albl{font-size:11px;color:#999;white-space:nowrap}
-.abtn{padding:5px 12px;border:1px solid #ddd;border-radius:4px;font-size:11px;color:#666;background:#fff;cursor:pointer;white-space:nowrap}
+.abtn{padding:5px 11px;border:1px solid #ddd;border-radius:4px;font-size:11px;color:#666;background:#fff;cursor:pointer;white-space:nowrap}
 .abtn:hover{border-color:#00a0ff;color:#00a0ff}
 
-/* LIGHTBOX */
-#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;align-items:center;justify-content:center;padding:16px;flex-direction:column;gap:10px}
+/* ── LIGHTBOX ── */
+#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:200;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:10px}
 #lb.on{display:flex}
-#lbi{max-width:90vw;max-height:82vh;object-fit:contain;border-radius:3px}
-#lbx{position:fixed;top:14px;right:18px;background:none;border:none;color:#888;font-size:28px;cursor:pointer;line-height:1}
+#lb-img{max-width:88vw;max-height:72vh;object-fit:contain;border-radius:3px;display:block}
+#lbx{position:fixed;top:14px;right:18px;background:none;border:none;color:#888;font-size:28px;cursor:pointer;line-height:1;z-index:10}
 #lbx:hover{color:#fff}
-#lbc{color:#ccc;font-size:13px;background:rgba(0,0,0,.5);padding:5px 14px;border-radius:4px;max-width:80vw;text-align:center;display:none}
+#lb-nav{display:flex;gap:8px}
+#lb-nav button{background:#1e1e1e;border:1px solid #333;color:#aaa;padding:6px 18px;border-radius:4px;cursor:pointer;font-size:14px}
+#lb-nav button:hover{color:#fff}
+#lb-thumbs{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;max-width:80vw}
+.lb-thumb{width:48px;height:48px;object-fit:cover;border-radius:2px;cursor:pointer;border:2px solid transparent;opacity:.6;transition:all .15s}
+.lb-thumb.act,.lb-thumb:hover{border-color:#fff;opacity:1}
+#lb-cap{color:#ccc;font-size:13px;text-align:center;max-width:70vw}
+#lb-title{color:#fff;font-size:14px;font-weight:600;text-align:center}
+
+/* ── NDA TOAST ── */
+#nda-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#222;color:#ddd;font-size:12px;padding:10px 20px;border-radius:6px;border:1px solid #444;z-index:500;display:none;white-space:nowrap}
+
+/* ── NDA FOOTER ── */
+footer{border-top:1px solid #eee;padding:24px 40px;margin-top:20px}
+.footer-nda{font-size:11px;color:#bbb;line-height:1.7;max-width:900px;margin:0 auto;text-align:center}
+.footer-nda strong{color:#999}
+
+/* ── PRINT CSS ── */
+@media print{
+  #etb,#addbar,.rctrl,#loading,#lb,#nda-toast,.ceo,footer .no-print{display:none!important}
+  header{border:none}
+  .gwrap{padding:0;max-width:100%}
+  .rw{margin-bottom:6px}
+  body.em .ceo{display:none!important}
+  footer{margin-top:10px}
+}
+
+/* ── NO SELECT on images ── */
+.cell img{-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
 </style>
 </head>
 <body>
 
 <div id="loading"><div class="spinner"></div><p>Загрузка...</p></div>
 
-<!-- EDIT TOOLBAR -->
+<!-- ── EDIT TOOLBAR ── -->
 <div id="etb">
-  <span class="el">Имя</span>
-  <input class="ei" id="ename" style="width:160px">
-  <span class="el">Описание</span>
-  <input class="ei" id="edesc" style="width:240px">
-  <span class="el">Email</span>
-  <input class="ei" id="eemail" style="width:175px">
-  <span class="el">LinkedIn URL</span>
-  <input class="ei" id="eli" style="width:185px">
-  <span class="el">ArtStation URL</span>
-  <input class="ei" id="eas" style="width:185px">
-  <span class="el">CV URL</span>
-  <input class="ei" id="ecv" style="width:185px" placeholder="Google Drive...">
-  <div class="esp"></div>
-  <span class="gdnote">⚠ Google Drive: правой кнопкой на файл → Открыть доступ → Все у кого есть ссылка</span>
-  <span class="efl" id="efl"></span>
-  <button class="ebtn esave" onclick="saveAll()">💾 Сохранить</button>
-  <button class="ebtn eexit" onclick="exitEdit()">✕ Выйти</button>
+  <div class="etb-row">
+    <span class="el">Имя</span>
+    <input class="ei" id="ename" style="width:160px">
+    <span class="el">Строка 1</span>
+    <input class="ei" id="eline1" style="width:220px" placeholder="2D Art Supervisor · Environment Artist">
+    <span class="el">Строка 2</span>
+    <input class="ei" id="eline2" style="width:200px" placeholder="Wargaming · Belgrade">
+    <span class="el">Строка 3</span>
+    <input class="ei" id="eline3" style="width:180px" placeholder="Доп. информация...">
+    <div class="esp"></div>
+    <a href="https://clarity.microsoft.com/projects/view/y68zizkq9o/dashboard" target="_blank" class="alink">📊 Clarity</a>
+    <a href="https://analytics.google.com/" target="_blank" class="alink">📈 Analytics</a>
+    <span class="efl" id="efl"></span>
+    <button class="ebtn esave" onclick="saveAll()">💾 Сохранить</button>
+    <button class="ebtn eexit" onclick="exitEdit()">✕ Выйти</button>
+  </div>
+  <div class="etb-row">
+    <span class="el">Email</span>
+    <input class="ei" id="eemail" style="width:175px">
+    <span class="el">LinkedIn URL</span>
+    <input class="ei" id="eli" style="width:185px">
+    <span class="el">ArtStation URL</span>
+    <input class="ei" id="eas" style="width:185px">
+    <span class="el">CV (Google Drive)</span>
+    <input class="ei" id="ecv" style="width:185px" placeholder="https://drive.google.com/...">
+    <div class="esp"></div>
+    <button class="epdf" onclick="dlPDF()">📄 Скачать PDF (NDA)</button>
+  </div>
 </div>
 
-<!-- HEADER -->
+<!-- ── HEADER ── -->
 <header>
   <div class="hrow">
-    <div class="hname" id="hname"></div>
+    <div class="hleft">
+      <div class="hname" id="hname"></div>
+      <div class="hline" id="hline1"></div>
+      <div class="hline" id="hline2"></div>
+      <div class="hline" id="hline3"></div>
+    </div>
     <div class="hlinks" id="hlinks"></div>
   </div>
-  <div class="hdesc" id="hdesc"></div>
 </header>
 
-<!-- GRID -->
-<div class="gwrap">
-  <div id="rows-wrap"></div>
-</div>
+<!-- ── GRID ── -->
+<div class="gwrap"><div id="rows-wrap"></div></div>
 
-<!-- ADD ROW -->
+<!-- ── ADD ROW ── -->
 <div id="addbar">
   <span class="albl">+ Добавить строку:</span>
   <button class="abtn" onclick="addRow('sq4')">■■■■ 4 квадрата</button>
@@ -168,29 +236,49 @@ body.em #addbar{display:flex}
   <button class="abtn" onclick="addRow('sp4')">▬▬▬▬ Вся ширина</button>
 </div>
 
-<!-- LIGHTBOX -->
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-nda">
+    <strong>CONFIDENTIAL — NDA PROTECTED MATERIALS</strong><br>
+    All artwork, images, and content presented on this page are the exclusive intellectual property of Mariia Filippova and are protected under international copyright law, including but not limited to the Berne Convention for the Protection of Literary and Artistic Works, EU Directive 2001/29/EC on Copyright, and applicable national copyright legislation. These materials are shared strictly for review purposes and may not be reproduced, distributed, published, downloaded, stored, transmitted, or used in any form without prior written consent. Unauthorized use constitutes copyright infringement and may result in legal action. © Mariia Filippova. All rights reserved.
+  </div>
+</footer>
+
+<!-- ── LIGHTBOX ── -->
 <div id="lb">
   <button id="lbx" onclick="closeLB()">×</button>
-  <img id="lbi" src="" alt="">
-  <div id="lbc"></div>
+  <img id="lb-img" src="" alt="">
+  <div id="lb-title"></div>
+  <div id="lb-thumbs"></div>
+  <div id="lb-cap"></div>
+  <div id="lb-nav">
+    <button onclick="navLB(-1)">← Prev</button>
+    <button onclick="navLB(1)">Next →</button>
+  </div>
 </div>
 
+<!-- ── NDA TOAST ── -->
+<div id="nda-toast">🔒 NDA — Mariia Filippova · Загрузка запрещена</div>
+
 <script>
-/* ══ КОНФИГ ══════════════════════════════════ */
+/* ══ CONFIG ══════════════════════════════════════ */
 var BIN_ID  = '6a857598f5f4af5e2927e1b3';
 var API_KEY = '$2a$10$yiqe27PHrmTV/4eeP4rI4.R6d/kXdKb44upyfo9IY8XcU8gcKxsfC';
 var SECRET  = 'bong2026';
-/* ════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════ */
 
 var IS_EDIT = new URLSearchParams(location.search).get('key') === SECRET;
 
 var S = {
   name:'Mariia Filippova',
-  desc:'2D Art Supervisor · Environment Artist · Wargaming · Belgrade',
+  line1:'2D Art Supervisor · Environment Artist',
+  line2:'Wargaming · Belgrade, Serbia',
+  line3:'',
   email:'marybong13@gmail.com',
   liUrl:'https://linkedin.com/in/mariia-filippova-marybong',
   asUrl:'https://artstation.com/marybong',
-  cvUrl:'', rows:[]
+  cvUrl:'',
+  rows:[]
 };
 
 var RC = {
@@ -202,6 +290,8 @@ var RC = {
   sp2sp2:{cells:2,spans:[2,2]},
   sp4:   {cells:1,spans:[4]}
 };
+
+var ROW_SIZES = {S:'14vw', M:'22vw', L:'32vw', XL:'48vw'};
 
 function sc(n){return n===1?'sq':'sp'+n;}
 
@@ -245,7 +335,12 @@ function flash(msg,err){
 /* ── HEADER ── */
 function renderHeader(){
   document.getElementById('hname').textContent=S.name||'';
-  document.getElementById('hdesc').textContent=S.desc||'';
+  document.getElementById('hline1').textContent=S.line1||'';
+  document.getElementById('hline2').textContent=S.line2||'';
+  document.getElementById('hline3').textContent=S.line3||'';
+  document.getElementById('hline1').style.display=S.line1?'':'none';
+  document.getElementById('hline2').style.display=S.line2?'':'none';
+  document.getElementById('hline3').style.display=S.line3?'':'none';
   document.title=S.name||'Portfolio';
   var hl=document.getElementById('hlinks');
   hl.innerHTML='';
@@ -253,26 +348,29 @@ function renderHeader(){
     if(!href) return;
     var a=document.createElement('a');
     a.href=href;a.textContent=label;
-    if(cls)a.className=cls;
-    if(!href.startsWith('mailto'))a.target='_blank';
+    if(cls) a.className=cls;
+    if(!href.startsWith('mailto')) a.target='_blank';
     hl.appendChild(a);
   }
   lnk('mailto:'+S.email,'Email');
   lnk(S.liUrl,'LinkedIn');
   lnk(S.asUrl,'ArtStation');
-  if(S.cvUrl)lnk(gd(S.cvUrl),'↓ CV','hcv');
+  if(S.cvUrl) lnk(gd(S.cvUrl),'↓ CV','hcv');
+  if(!IS_EDIT){
+    var pb=document.createElement('button');
+    pb.className='hpdf';pb.textContent='📄 Скачать PDF';
+    pb.onclick=dlPDF;
+    hl.appendChild(pb);
+  }
 }
 
-/* ── DRAG & DROP ── */
+/* ── DRAG & DROP ROWS ── */
 var dragSrcId=null;
-
 function makeDraggable(rowEl,rowId){
   rowEl.setAttribute('draggable','true');
   rowEl.dataset.rowId=rowId;
-
   rowEl.addEventListener('dragstart',function(e){
-    dragSrcId=rowId;
-    e.dataTransfer.effectAllowed='move';
+    dragSrcId=rowId;e.dataTransfer.effectAllowed='move';
     setTimeout(function(){rowEl.classList.add('dragging');},0);
   });
   rowEl.addEventListener('dragend',function(){
@@ -280,95 +378,168 @@ function makeDraggable(rowEl,rowId){
     document.querySelectorAll('.rw').forEach(function(r){r.classList.remove('drag-over');});
   });
   rowEl.addEventListener('dragover',function(e){
-    e.preventDefault();
-    e.dataTransfer.dropEffect='move';
-    if(dragSrcId!==rowId) rowEl.classList.add('drag-over');
+    e.preventDefault();if(dragSrcId!==rowId) rowEl.classList.add('drag-over');
   });
-  rowEl.addEventListener('dragleave',function(){
-    rowEl.classList.remove('drag-over');
-  });
+  rowEl.addEventListener('dragleave',function(){rowEl.classList.remove('drag-over');});
   rowEl.addEventListener('drop',function(e){
     e.preventDefault();e.stopPropagation();
     rowEl.classList.remove('drag-over');
     if(dragSrcId&&dragSrcId!==rowId){
       var si=S.rows.findIndex(function(r){return r.id===dragSrcId;});
       var di=S.rows.findIndex(function(r){return r.id===rowId;});
-      if(si>=0&&di>=0){
-        var tmp=S.rows[si];S.rows[si]=S.rows[di];S.rows[di]=tmp;
-        renderGrid();
-      }
+      if(si>=0&&di>=0){var t=S.rows[si];S.rows[si]=S.rows[di];S.rows[di]=t;renderGrid();}
     }
     dragSrcId=null;
   });
 }
 
-/* ── GRID ── */
+/* ── RENDER GRID ── */
 function renderGrid(){
   var wrap=document.getElementById('rows-wrap');
   wrap.innerHTML='';
 
   S.rows.forEach(function(row){
-    var cfg=RC[row.type];if(!cfg)return;
+    var cfg=RC[row.type];if(!cfg) return;
+    if(!row.rowSize) row.rowSize='M';
+    if(!row.cells) row.cells=[];
 
-    var rw=document.createElement('div');
-    rw.className='rw';
+    var rw=document.createElement('div');rw.className='rw';
 
-    /* row controls in left margin */
+    /* row controls */
     if(IS_EDIT){
-      var rc=document.createElement('div');
-      rc.className='rctrl';
-      var dh=document.createElement('span');
-      dh.className='drag-h';dh.textContent='⠿';dh.title='Перетащить строку';
-      var db=document.createElement('button');
-      db.className='del-row-btn';db.textContent='✕ Удалить';
-      (function(id){db.onclick=function(){
-        if(!confirm('Удалить строку?'))return;
-        S.rows=S.rows.filter(function(r){return r.id!==id;});
-        renderGrid();
-      };})(row.id);
-      rc.appendChild(dh);rc.appendChild(db);
+      var rc=document.createElement('div');rc.className='rctrl';
+      var dh=document.createElement('span');dh.className='drag-h';dh.textContent='⠿';dh.title='Перетащить';
+      var sb=document.createElement('div');sb.className='size-btns';
+      ['S','M','L','XL'].forEach(function(sz){
+        var b=document.createElement('button');b.className='sz-btn'+(row.rowSize===sz?' on':'');
+        b.textContent=sz;
+        (function(s,btn){b.onclick=function(){row.rowSize=s;S.rows.forEach(function(r,i){});renderGrid();};})(sz,b);
+        sb.appendChild(b);
+      });
+      var db=document.createElement('button');db.className='del-row-btn';db.textContent='✕ Удалить';
+      (function(id){db.onclick=function(){if(!confirm('Удалить строку?'))return;S.rows=S.rows.filter(function(r){return r.id!==id;});renderGrid();};})(row.id);
+      rc.appendChild(dh);rc.appendChild(sb);rc.appendChild(db);
       rw.appendChild(rc);
       makeDraggable(rw,row.id);
     }
 
     /* row grid */
-    var rg=document.createElement('div');
-    rg.className='rg';
+    var rg=document.createElement('div');rg.className='rg';
+    rg.style.gridAutoRows=ROW_SIZES[row.rowSize||'M'];
 
     row.cells.forEach(function(cell,ci){
+      if(ci>=cfg.cells) return;
       var span=cfg.spans[ci]||1;
-      var div=document.createElement('div');
-      div.className='cell '+sc(span);
+      var div=document.createElement('div');div.className='cell '+sc(span);
+
+      /* main image */
       var imgUrl=gd(cell.url||'');
+      var mainImg=null;
       if(imgUrl){
-        var img=document.createElement('img');
-        img.src=imgUrl;img.alt=cell.caption||'';
-        div.appendChild(img);
+        mainImg=document.createElement('img');
+        mainImg.className='main-img';mainImg.src=imgUrl;mainImg.alt=cell.caption||'';
+        div.appendChild(mainImg);
       } else {
-        var ph=document.createElement('div');
-        ph.className='cno';ph.textContent=IS_EDIT?'Нет картинки':'';
-        div.appendChild(ph);
+        var ph=document.createElement('div');ph.className='cno';
+        ph.textContent=IS_EDIT?'Нет картинки':'';div.appendChild(ph);
       }
-      var cap=document.createElement('div');
-      cap.className='ccap';cap.textContent=cell.caption||'';
-      div.appendChild(cap);
+
+      /* filmstrip */
+      var extras=(cell.images||[]).filter(function(x){return x&&x.url;});
+      if(extras.length>0 && cell.showFilmstrip!==false && !IS_EDIT){
+        var fs=document.createElement('div');fs.className='filmstrip visible';
+        var allImgs=[{url:cell.url,caption:cell.caption}].concat(extras);
+        var thumbW=Math.min(40,Math.max(14,Math.floor((span*100-20)/allImgs.length)));
+        allImgs.forEach(function(im,ii){
+          var ft=document.createElement('div');ft.className='fs-item'+(ii===0?' act':'');
+          ft.style.width=thumbW+'px';
+          ft.style.backgroundImage='url('+gd(im.url)+')';
+          ft.style.backgroundSize='cover';ft.style.backgroundPosition='center';
+          ft.addEventListener('mouseenter',function(){
+            if(mainImg) mainImg.src=gd(im.url);
+            fs.querySelectorAll('.fs-item').forEach(function(x){x.classList.remove('act');});
+            ft.classList.add('act');
+          });
+          ft.addEventListener('mouseleave',function(){
+            if(mainImg) mainImg.src=imgUrl;
+            fs.querySelectorAll('.fs-item').forEach(function(x){x.classList.remove('act');});
+            fs.querySelector('.fs-item').classList.add('act');
+          });
+          fs.appendChild(ft);
+        });
+        div.appendChild(fs);
+      } else if(extras.length>0 && !IS_EDIT){
+        var badge=document.createElement('div');badge.className='cnt-badge';
+        badge.textContent='⊞ '+(extras.length+1);badge.style.display='block';
+        div.appendChild(badge);
+      }
+
+      /* caption */
+      var cap=document.createElement('div');cap.className='ccap';
+      cap.textContent=cell.caption||'';div.appendChild(cap);
 
       /* edit overlay */
-      var eo=document.createElement('div');eo.className='ceo';
-      var ui=document.createElement('input');ui.className='cin';
-      ui.placeholder='Google Drive ссылка...';ui.value=cell.url||'';
-      ui.onchange=function(){cell.url=this.value;renderGrid();};
-      var ci2=document.createElement('input');ci2.className='cin';
-      ci2.placeholder='Подпись на картинке...';ci2.value=cell.caption||'';
-      ci2.onchange=function(){cell.caption=this.value;};
-      var clr=document.createElement('button');clr.className='cclr';clr.textContent='✕ Очистить';
-      (function(c){clr.onclick=function(){c.url='';c.caption='';renderGrid();};})(cell);
-      eo.appendChild(ui);eo.appendChild(ci2);eo.appendChild(clr);
-      div.appendChild(eo);
+      if(IS_EDIT){
+        var eo=document.createElement('div');eo.className='ceo';
 
-      if(!IS_EDIT&&imgUrl){
-        div.onclick=function(){openLB(imgUrl,cell.caption||'');};
+        var ui=document.createElement('input');ui.className='cin';
+        ui.placeholder='Google Drive ссылка (главная картинка)...';ui.value=cell.url||'';
+        ui.onchange=function(){cell.url=this.value;renderGrid();};
+
+        var ci2=document.createElement('input');ci2.className='cin';
+        ci2.placeholder='Подпись на картинке...';ci2.value=cell.caption||'';
+        ci2.onchange=function(){cell.caption=this.value;};
+
+        /* filmstrip toggle */
+        var frow=document.createElement('div');frow.className='eo-row';
+        var fchk=document.createElement('input');fchk.type='checkbox';fchk.className='eo-check';
+        fchk.checked=cell.showFilmstrip!==false;
+        fchk.onchange=function(){cell.showFilmstrip=this.checked;};
+        var flbl=document.createElement('span');flbl.className='eo-label';flbl.textContent='Показывать filmstrip на главной';
+        frow.appendChild(fchk);frow.appendChild(flbl);
+
+        /* extra images */
+        var elbl=document.createElement('div');elbl.className='eo-label';elbl.style.marginTop='6px';elbl.textContent='Доп. изображения (карусель при клике):';
+        var extList=document.createElement('div');extList.className='extra-list';
+
+        function renderExtras(){
+          extList.innerHTML='';
+          (cell.images||[]).forEach(function(im,xi){
+            var it=document.createElement('div');it.className='extra-item';
+            var img2=document.createElement('img');img2.src=gd(im.url);
+            var xb=document.createElement('button');xb.className='extra-del';xb.textContent='×';
+            (function(i){xb.onclick=function(){cell.images.splice(i,1);renderExtras();};})(xi);
+            it.appendChild(img2);it.appendChild(xb);extList.appendChild(it);
+          });
+        }
+        renderExtras();
+
+        var addExt=document.createElement('input');addExt.className='cin';
+        addExt.placeholder='URL доп. картинки → Enter';
+        addExt.style.marginTop='4px';
+        addExt.onkeydown=function(e){
+          if(e.key==='Enter'&&this.value.trim()){
+            if(!cell.images) cell.images=[];
+            cell.images.push({url:this.value.trim()});
+            this.value='';renderExtras();
+          }
+        };
+
+        var clr=document.createElement('button');clr.className='cclr';clr.textContent='✕ Очистить';
+        (function(c){clr.onclick=function(){c.url='';c.caption='';c.images=[];renderGrid();};})(cell);
+
+        eo.appendChild(ui);eo.appendChild(ci2);eo.appendChild(frow);
+        eo.appendChild(elbl);eo.appendChild(extList);eo.appendChild(addExt);
+        eo.appendChild(clr);
+        div.appendChild(eo);
       }
+
+      /* click → lightbox */
+      if(!IS_EDIT&&imgUrl){
+        (function(c,idx){div.onclick=function(){openLB(idx);};})(cell,lbItems.length);
+      }
+      lbItems.push({cell:cell,imgUrl:imgUrl});
+
       rg.appendChild(div);
     });
 
@@ -377,17 +548,145 @@ function renderGrid(){
   });
 }
 
+/* ── LIGHTBOX ── */
+var lbItems=[];
+var lbCurIdx=0;
+
+function rebuildLBItems(){
+  lbItems=[];
+  S.rows.forEach(function(row){
+    var cfg=RC[row.type];if(!cfg)return;
+    row.cells.forEach(function(cell){
+      lbItems.push({cell:cell,imgUrl:gd(cell.url||'')});
+    });
+  });
+}
+
+function openLB(idx){
+  lbCurIdx=idx;
+  var item=lbItems[idx];if(!item||!item.imgUrl)return;
+  var cell=item.cell;
+  var allImgs=[{url:cell.url,caption:cell.caption}].concat(cell.images||[]).filter(function(x){return x&&x.url;});
+  var curImgIdx=0;
+
+  function showImg(i){
+    curImgIdx=i;
+    document.getElementById('lb-img').src=gd(allImgs[i].url);
+    document.getElementById('lb-cap').textContent=allImgs[i].caption||cell.caption||'';
+    document.getElementById('lb-title').textContent=cell.caption||'';
+    document.querySelectorAll('.lb-thumb').forEach(function(t,ti){
+      t.classList.toggle('act',ti===i);
+    });
+  }
+
+  var thumbs=document.getElementById('lb-thumbs');
+  thumbs.innerHTML='';
+  if(allImgs.length>1){
+    allImgs.forEach(function(im,i){
+      var t=document.createElement('img');t.className='lb-thumb'+(i===0?' act':'');
+      t.src=gd(im.url);
+      (function(ii){t.onclick=function(){showImg(ii);};})(i);
+      thumbs.appendChild(t);
+    });
+  }
+  thumbs.style.display=allImgs.length>1?'flex':'none';
+
+  document.getElementById('lb-nav').style.display=lbItems.filter(function(x){return x.imgUrl;}).length>1?'flex':'none';
+
+  showImg(0);
+  document.getElementById('lb').classList.add('on');
+}
+
+function closeLB(){document.getElementById('lb').classList.remove('on');}
+
+function navLB(dir){
+  var idx=lbCurIdx+dir;
+  while(idx>=0&&idx<lbItems.length&&!lbItems[idx].imgUrl) idx+=dir;
+  if(idx>=0&&idx<lbItems.length) openLB(idx);
+}
+
+document.getElementById('lb').addEventListener('click',function(e){if(e.target===this)closeLB();});
+document.addEventListener('keydown',function(e){
+  if(!document.getElementById('lb').classList.contains('on'))return;
+  if(e.key==='Escape')closeLB();
+  if(e.key==='ArrowLeft')navLB(-1);
+  if(e.key==='ArrowRight')navLB(1);
+});
+
+/* ── NDA PROTECTION ── */
+function showNDAtoast(){
+  var t=document.getElementById('nda-toast');
+  t.style.display='block';
+  setTimeout(function(){t.style.display='none';},2500);
+}
+
+function makeNDAblob(cb){
+  var canvas=document.createElement('canvas');
+  canvas.width=900;canvas.height=600;
+  var ctx=canvas.getContext('2d');
+  ctx.fillStyle='#f8f8f8';ctx.fillRect(0,0,900,600);
+  ctx.fillStyle='#e0e0e0';
+  for(var i=0;i<900;i+=40){ctx.fillRect(i,0,1,600);}
+  for(var j=0;j<600;j+=40){ctx.fillRect(0,j,900,1);}
+  ctx.fillStyle='rgba(30,30,30,0.08)';
+  ctx.font='bold 200px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('NDA',450,260);
+  ctx.fillStyle='#333';
+  ctx.font='bold 36px Arial';
+  ctx.fillText('NDA — Confidential Material',450,380);
+  ctx.font='22px Arial';ctx.fillStyle='#666';
+  ctx.fillText('© Mariia Filippova · All rights reserved',450,430);
+  ctx.fillText('Unauthorized use is prohibited by law',450,470);
+  canvas.toBlob(function(blob){cb(blob);},'image/jpeg',0.9);
+}
+
+if(!IS_EDIT){
+  document.addEventListener('contextmenu',function(e){
+    if(e.target.tagName==='IMG'||e.target.closest&&e.target.closest('.cell')){
+      e.preventDefault();
+      makeNDAblob(function(blob){
+        var url=URL.createObjectURL(blob);
+        var a=document.createElement('a');a.href=url;a.download='NDA_Mariia_Filippova.jpg';
+        a.click();URL.revokeObjectURL(url);
+      });
+      showNDAtoast();
+    }
+  });
+
+  document.addEventListener('dragstart',function(e){
+    if(e.target.tagName==='IMG'){e.preventDefault();showNDAtoast();}
+  });
+
+  document.addEventListener('keydown',function(e){
+    if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='S')){
+      e.preventDefault();showNDAtoast();
+    }
+  });
+}
+
+/* ── PDF DOWNLOAD ── */
+function dlPDF(){
+  if(!confirm('⚠️ NDA Notice\n\nThese materials are confidential and shared for review purposes only.\nBy downloading, you agree not to distribute or publish them.\n\nContinue to download PDF?')) return;
+  gtag('event','pdf_download',{event_category:'portfolio'});
+  window.print();
+}
+
+/* ── ADD ROW ── */
 function addRow(type){
   var cfg=RC[type];if(!cfg)return;
-  var cells=[];for(var i=0;i<cfg.cells;i++)cells.push({url:'',caption:''});
-  S.rows.push({id:'r'+Date.now(),type:type,cells:cells});
-  renderGrid();
+  var cells=[];
+  for(var i=0;i<cfg.cells;i++) cells.push({url:'',caption:'',showFilmstrip:true,images:[]});
+  S.rows.push({id:'r'+Date.now(),type:type,rowSize:'M',cells:cells});
+  lbItems=[];renderGrid();rebuildLBItems();
   setTimeout(function(){window.scrollTo(0,document.body.scrollHeight);},50);
 }
 
+/* ── EDITOR ── */
 function fillEditor(){
   document.getElementById('ename').value=S.name||'';
-  document.getElementById('edesc').value=S.desc||'';
+  document.getElementById('eline1').value=S.line1||'';
+  document.getElementById('eline2').value=S.line2||'';
+  document.getElementById('eline3').value=S.line3||'';
   document.getElementById('eemail').value=S.email||'';
   document.getElementById('eli').value=S.liUrl||'';
   document.getElementById('eas').value=S.asUrl||'';
@@ -396,7 +695,9 @@ function fillEditor(){
 
 function saveAll(){
   S.name=document.getElementById('ename').value;
-  S.desc=document.getElementById('edesc').value;
+  S.line1=document.getElementById('eline1').value;
+  S.line2=document.getElementById('eline2').value;
+  S.line3=document.getElementById('eline3').value;
   S.email=document.getElementById('eemail').value;
   S.liUrl=document.getElementById('eli').value;
   S.asUrl=document.getElementById('eas').value;
@@ -409,30 +710,18 @@ function exitEdit(){
   setTimeout(function(){location.href=location.pathname;},800);
 }
 
-/* ── LIGHTBOX ── */
-function openLB(url,cap){
-  document.getElementById('lbi').src=url;
-  var c=document.getElementById('lbc');
-  c.textContent=cap;c.style.display=cap?'block':'none';
-  document.getElementById('lb').classList.add('on');
-}
-function closeLB(){document.getElementById('lb').classList.remove('on');}
-document.getElementById('lb').addEventListener('click',function(e){if(e.target===this)closeLB();});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLB();});
-
 /* ── INIT ── */
 (function(){
   try{
     var c=localStorage.getItem('mf_cache');
-    if(c){S=JSON.parse(c);renderHeader();renderGrid();}
+    if(c){S=JSON.parse(c);lbItems=[];renderHeader();renderGrid();rebuildLBItems();}
   }catch(e){}
 
   apiLoad().then(function(){
     document.getElementById('loading').style.display='none';
-    renderHeader();renderGrid();
+    lbItems=[];renderHeader();renderGrid();rebuildLBItems();
     if(IS_EDIT){
       document.getElementById('etb').style.display='flex';
-      document.getElementById('addbar').style.display='flex';
       document.body.classList.add('em');
       fillEditor();
     }
