@@ -51,7 +51,7 @@ header{border-bottom:1px solid #eee;padding:22px 0 18px}
 .hlinks a:hover,.hlinks button:hover{color:#1a1a1a}
 .hcv,.hpdf{padding:6px 14px;border:1px solid #ddd!important;border-radius:5px;color:#555!important;font-size:13px!important}
 
-/* GRID AREA */
+/* GRID AREA — gap всегда 4px, не меняется */
 #rows-wrap{display:flex;flex-direction:column;gap:4px;padding:12px 0 32px}
 
 /* ROW */
@@ -79,8 +79,8 @@ body.em .resize-handle{display:flex}
 .sq{aspect-ratio:1/1}.sp2{grid-column:span 2;aspect-ratio:2/1}.sp3{grid-column:span 3;aspect-ratio:3/1}.sp4{grid-column:span 4;aspect-ratio:4/1}
 
 /* Cell background div (replaces <img>) */
-.cell-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .3s}
-.cell:hover .cell-bg{transform:scale(1.03)}
+.cell-bg{position:absolute;inset:0;background-size:contain;background-repeat:no-repeat;background-position:center;background-color:#111;transition:transform .3s}
+.cell:hover .cell-bg{transform:scale(1.02)}
 
 /* Cell drag feedback */
 .cell.cell-drag-over{outline:2px dashed #00a0ff;outline-offset:-2px}
@@ -108,7 +108,9 @@ body.em .ccap,.body.em .filmstrip{pointer-events:none;opacity:0!important}
 .eo-label{font-size:10px;color:rgba(255,255,255,.5)}
 .eo-check{accent-color:#00a0ff}
 .extra-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.extra-item{position:relative;width:38px;height:38px}
+.extra-item{position:relative;width:38px;height:38px;cursor:grab}
+.extra-item.drag-over{outline:2px dashed #00a0ff;outline-offset:1px}
+.extra-item.dragging{opacity:.4}
 .extra-item .eibg{width:100%;height:100%;border-radius:2px;border:1px solid rgba(255,255,255,.3);background-size:cover;background-position:center}
 .extra-del{position:absolute;top:-5px;right:-5px;background:#e00;color:#fff;border:none;border-radius:50%;width:15px;height:15px;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .cclr{background:rgba(200,40,40,.75);color:#fff;border:none;border-radius:3px;font-size:10px;padding:2px 7px;cursor:pointer;margin-top:auto;align-self:flex-end}
@@ -491,11 +493,42 @@ function renderGrid(){
         var extList=document.createElement('div');extList.className='extra-list';
         function renderExtras(){
           extList.innerHTML='';
+          var dragIdx=null;
           (cell.images||[]).forEach(function(im,xi){
-            var it=document.createElement('div');it.className='extra-item';
-            var ibg=document.createElement('div');ibg.className='eibg';ibg.style.backgroundImage='url('+gd(im.url)+')';
+            var it=document.createElement('div');
+            it.className='extra-item';it.setAttribute('draggable','true');it.title='Тяни чтобы переставить';
+            var ibg=document.createElement('div');ibg.className='eibg';
+            ibg.style.backgroundImage='url('+gd(im.url)+')';
             var xb=document.createElement('button');xb.className='extra-del';xb.textContent='×';
-            (function(i){xb.onclick=function(){cell.images.splice(i,1);renderExtras();};})(xi);
+            (function(i){xb.onclick=function(e){e.stopPropagation();cell.images.splice(i,1);renderExtras();};})(xi);
+
+            /* drag reorder */
+            it.addEventListener('dragstart',function(e){
+              e.stopPropagation();dragIdx=xi;
+              setTimeout(function(){it.classList.add('dragging');},0);
+            });
+            it.addEventListener('dragend',function(){
+              it.classList.remove('dragging');dragIdx=null;
+              extList.querySelectorAll('.extra-item').forEach(function(x){x.classList.remove('drag-over');});
+            });
+            it.addEventListener('dragover',function(e){
+              e.preventDefault();e.stopPropagation();
+              extList.querySelectorAll('.extra-item').forEach(function(x){x.classList.remove('drag-over');});
+              it.classList.add('drag-over');
+            });
+            it.addEventListener('dragleave',function(){it.classList.remove('drag-over');});
+            it.addEventListener('drop',function(e){
+              e.preventDefault();e.stopPropagation();
+              it.classList.remove('drag-over');
+              if(dragIdx!==null&&dragIdx!==xi){
+                var tmp=cell.images[dragIdx];
+                cell.images[dragIdx]=cell.images[xi];
+                cell.images[xi]=tmp;
+                renderExtras();
+              }
+              dragIdx=null;
+            });
+
             it.appendChild(ibg);it.appendChild(xb);extList.appendChild(it);
           });
         }
@@ -581,13 +614,29 @@ document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight')navLB(1);
 });
 
-/* NDA PROTECTION */
+/* NDA: showToast — определяем первым */
 function showToast(){
   var t=document.getElementById('nda-toast');t.style.display='block';
   setTimeout(function(){t.style.display='none';},2500);
 }
 
-/* Pre-generate NDA watermark image for right-click overlay */
+/* ── МАКСИМАЛЬНАЯ БЛОКИРОВКА Ctrl+S ── */
+(function(){
+  function blockSave(e){
+    if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='S'||e.keyCode===83)){
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      showToast();return false;
+    }
+    if((e.ctrlKey||e.metaKey)&&(e.key==='u'||e.key==='U')){e.preventDefault();}
+  }
+  window.addEventListener('keydown',blockSave,true);
+  window.addEventListener('keypress',blockSave,true);
+  window.addEventListener('keyup',blockSave,true);
+  document.addEventListener('keydown',blockSave,true);
+  window.onkeydown=blockSave;
+  window.onbeforeprint=function(){return false;};
+})();
+
 var NDA_SRC='';
 (function(){
   var c=document.createElement('canvas');c.width=900;c.height=600;
@@ -602,17 +651,6 @@ var NDA_SRC='';
   ctx.fillText('Unauthorized use is prohibited by law',450,480);
   NDA_SRC=c.toDataURL('image/jpeg',0.85);
 })();
-
-if(!IS_EDIT){
-  /* Block Ctrl+S / Cmd+S completely — capture phase so browser never sees it */
-  window.addEventListener('keydown',function(e){
-    if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='S')){
-      e.preventDefault();e.stopImmediatePropagation();showToast();return false;
-    }
-    /* Also block Ctrl+A (select all) and Ctrl+U (view source) */
-    if((e.ctrlKey||e.metaKey)&&(e.key==='u'||e.key==='U')){e.preventDefault();}
-  },true);
-}
 
 /* PDF */
 function dlPDF(){
