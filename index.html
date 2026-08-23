@@ -8,10 +8,9 @@
 <meta name="description" content="">
 <title>Portfolio Mariia Filippova</title>
 <script type="text/javascript">
+/* Microsoft Clarity */
 (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","y68zizkq9o");
 </script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RYJHBRTT6P"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RYJHBRTT6P');</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100vh;font-family:system-ui,sans-serif;background:#fff;color:#1a1a1a}
@@ -49,9 +48,10 @@ header{border-bottom:1px solid #eee;padding:22px 0 18px}
 .hname{font-size:34px;font-weight:700;line-height:1.1;margin-bottom:6px}
 .hline{font-size:14px;color:#888;margin-top:4px;line-height:1.4}
 .hlinks{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-.hlinks a,.hlinks button{font-size:14px;color:#666;text-decoration:none;background:none;border:none;cursor:pointer}
+.hlinks a,.hlinks button{font-size:14px;color:#666;text-decoration:none;background:none;border:none;cursor:pointer; display:inline-block}
 .hlinks a:hover,.hlinks button:hover{color:#1a1a1a}
-.hcv,.hpdf{padding:6px 14px;border:1px solid #ddd!important;border-radius:5px;color:#555!important;font-size:13px!important}
+.hcv, .hpdf {padding:6px 14px;border:1px solid #ddd!important;border-radius:5px;color:#555!important;font-size:13px!important; transition:all 0.15s;}
+.hcv:hover, .hpdf:hover {background:#f5f5f5;color:#000!important;}
 
 /* GRID AREA */
 #rows-wrap{display:flex;flex-direction:column;gap:4px;padding:12px 0 32px}
@@ -78,6 +78,14 @@ body.em .resize-handle{display:flex}
 .resize-bar{height:4px;width:50px;background:#ddd;border-radius:2px;transition:background .15s}
 .resize-handle:hover .resize-bar,.resize-handle.active .resize-bar{background:#00a0ff}
 
+/* РАЗДЕЛИТЕЛЬ */
+.div-wrap { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; --line-color: #e0e0e0; }
+.div-wrap::before, .div-wrap::after { content: ''; flex: 1; height: 1px; background: var(--line-color); }
+.div-text { padding: 0 24px; font-weight: 400; letter-spacing: 3px; color: #888; text-transform: uppercase; white-space: nowrap; font-family: inherit; }
+.div-text:empty { padding: 0; }
+body.em .div-wrap { background: repeating-linear-gradient(45deg, #fafafa, #fafafa 10px, #ffffff 10px, #ffffff 20px); border: 1px dashed #ddd; border-radius: 4px; }
+.div-edit-panel { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.85); padding: 8px 14px; border-radius: 6px; display: flex; align-items: center; gap: 10px; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.15); flex-wrap: wrap; justify-content: center; }
+
 /* ROW GRID */
 .rg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 
@@ -88,6 +96,14 @@ body.em .resize-handle{display:flex}
 .sp3{grid-column:span 3}
 .sp4{grid-column:span 4}
 
+/* ТЕКСТОВЫЕ БЛОКИ */
+.cell-text-block {
+    position: absolute; inset: 0;
+    background: #fff; color: #333;
+    padding: 24px; font-size: 14px; line-height: 1.6;
+    overflow-y: auto; white-space: pre-wrap; cursor: text;
+}
+
 /* Cell background */
 .cell-bg{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;background-position:center;transition:transform .3s}
 .cell:hover .cell-bg{transform:scale(1.03)}
@@ -95,12 +111,51 @@ body.em .cell:hover .cell-bg{transform:none}
 body.em .cell{background:#cc2222!important}
 .fill-ok{display:inline-flex;align-items:center;gap:3px;background:rgba(0,180,0,.85);color:#fff;font-size:10px;padding:2px 7px;border-radius:3px;pointer-events:none;white-space:nowrap}
 
+/* КЛАСС ДЛЯ ФЛИПА */
+.flip-h { transform: scaleX(-1) !important; }
+.cell:hover .cell-bg.flip-h { transform: scaleX(-1) scale(1.03) !important; }
+body.em .cell:hover .cell-bg.flip-h { transform: scaleX(-1) !important; }
+
+/* КАРТИНКА-ВРЕЗКА */
+.cell-inset {
+    position: absolute;
+    top: 0; right: 0;
+    height: 42%; 
+    width: auto;
+    max-width: 45%;
+    object-fit: cover;
+    z-index: 5;
+    border-bottom: 2px solid #fff;
+    border-left: 2px solid #fff;
+    box-shadow: -3px 3px 15px rgba(0,0,0,0.3);
+    transition: all 0.25s ease-in-out;
+}
+.cell-inset.flip-inset {
+    transform: scaleX(-1) !important;
+    border-left: none !important;
+    border-right: 2px solid #fff !important;
+    box-shadow: 3px 3px 15px rgba(0,0,0,0.3) !important;
+}
+
+body:not(.em) .cell-inset { pointer-events: auto; }
+body:not(.em) .cell-inset:hover {
+    height: 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    z-index: 10 !important;
+}
+body.em .cell-inset { pointer-events: none; opacity: 0.8; }
+
 .cell.cell-drag-over{outline:2px dashed #00a0ff;outline-offset:-2px}
 .cell.cell-dragging{opacity:.5}
 
 .cno{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);font-size:12px}
 .ccap{position:absolute;bottom:0;left:0;right:0;padding:24px 10px 8px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-size:12px;font-weight:500;opacity:0;transition:opacity .2s;pointer-events:none;z-index:2}
 .cell:hover .ccap{opacity:1}
+.ccap.always-on { opacity: 1 !important; }
+body.em .ccap{opacity:0!important}
 .cnt-badge{position:absolute;bottom:9px;right:9px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;z-index:2}
 
 /* FILMSTRIP */
@@ -110,46 +165,46 @@ body.em .cell{background:#cc2222!important}
 .fs-item:hover,.fs-item.act{opacity:1;border-color:#fff}
 
 /* EDIT CELL OVERLAY */
-.ceo{position:absolute;inset:0;background:rgba(0,0,0,.62);display:none;flex-direction:column;gap:4px;padding:8px;z-index:10;overflow-y:auto}
+.ceo{position:absolute;inset:0;background:rgba(0,0,0,.45);display:none;flex-direction:column;gap:4px;padding:8px;z-index:10;overflow-y:auto}
 .ceo > * { flex-shrink: 0; } 
 body.em .ceo{display:flex}
-body.em .ccap,.body.em .filmstrip{pointer-events:none;opacity:0!important}
-.cin{background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:4px 7px;border-radius:3px;width:100%;font-family:inherit;outline:none}
+body.em .filmstrip, body.em .cnt-badge {pointer-events:none;opacity:0!important}
+.cin{background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:5px 8px;border-radius:3px;width:100%;font-family:inherit;outline:none}
 .cin:focus{border-color:#00a0ff}
 .cin::placeholder{color:rgba(255,255,255,.3)}
 .eo-row{display:flex;align-items:center;gap:5px;margin-top:2px}
-.eo-label{font-size:10px;color:rgba(255,255,255,.5)}
-.eo-check{accent-color:#00a0ff}
+.eo-label{font-size:11px;color:rgba(255,255,255,.9);white-space:nowrap;font-weight:500; cursor: pointer;}
+.eo-check{accent-color:#00a0ff;width:13px;height:13px; cursor: pointer;}
+.color-picker { width: 22px; height: 22px; padding: 0; border: none; cursor: pointer; border-radius: 3px; background: none; }
+.color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+.color-picker::-webkit-color-swatch { border: 1px solid rgba(255,255,255,.3); border-radius: 3px; }
 
 /* POS BAR */
 .pos-row{display:flex;align-items:center;gap:6px;margin-top:4px}
-.pos-bar-wrap{flex:1;height:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:3px;position:relative;cursor:ew-resize;user-select:none;touch-action:none}
-.pos-bar-thumb{position:absolute;top:2px;bottom:2px;width:14px;background:#00a0ff;border-radius:2px;transform:translateX(-50%);transition:left .05s;pointer-events:none}
+.pos-bar-wrap{flex:1;height:18px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:3px;position:relative;cursor:ew-resize;user-select:none;touch-action:none}
+.pos-bar-thumb{position:absolute;top:2px;bottom:2px;width:10px;background:#00a0ff;border-radius:2px;transform:translateX(-50%);transition:left .05s;pointer-events:none}
 .pos-bar-icon{position:absolute;right:5px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);font-size:10px;pointer-events:none}
-.pos-reset-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:3px;font-size:12px;padding:1px 7px;cursor:pointer;flex-shrink:0;line-height:1.4}
-.pos-reset-btn:hover{background:rgba(0,160,255,.4)}
+.pos-reset-btn{background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:3px;font-size:11px;padding:2px 6px;cursor:pointer;flex-shrink:0;line-height:1.2}
+.pos-reset-btn:hover{background:rgba(0,160,255,.6)}
 
 .extra-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .extra-item{position:relative;width:38px;height:38px;cursor:grab}
 .extra-item.drag-over{outline:2px dashed #00a0ff;outline-offset:1px}
 .extra-item.dragging{opacity:.4}
-
-/* zoom slider & input NO ARROWS */
-.zoom-row{display:flex;align-items:center;gap:6px;margin-top:4px}
-.zoom-sl{flex:1;accent-color:#00a0ff;cursor:pointer;height:16px}
-.zoom-num{
-  width:46px; background:rgba(0,0,0,.7); border:1px solid rgba(255,255,255,.25); 
-  color:#fff; font-size:11px; padding:3px 5px; border-radius:3px; font-family:inherit; text-align:center;
-  -moz-appearance: textfield; 
-}
-.zoom-num::-webkit-outer-spin-button,
-.zoom-num::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.zoom-lbl{font-size:10px;color:rgba(255,255,255,.5);white-space:nowrap}
 .extra-item .eibg{width:100%;height:100%;border-radius:2px;border:1px solid rgba(255,255,255,.3);background-size:cover;background-position:center}
 .extra-del{position:absolute;top:-5px;right:-5px;background:#e00;color:#fff;border:none;border-radius:50%;width:15px;height:15px;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.cclr{background:rgba(200,40,40,.75);color:#fff;border:none;border-radius:3px;font-size:10px;padding:2px 7px;cursor:pointer;margin-top:auto;}
-.cdef{background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:3px;font-size:10px;padding:2px 7px;cursor:pointer;margin-top:auto;}
-.cdef:hover{background:rgba(255,255,255,.25);}
+
+.zoom-num{
+  width:40px; background:rgba(0,0,0,.7); border:1px solid rgba(255,255,255,.3); 
+  color:#fff; font-size:11px; padding:2px 4px; border-radius:3px; font-family:inherit; text-align:center;
+  -moz-appearance: textfield; 
+}
+.zoom-num::-webkit-outer-spin-button, .zoom-num::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.zoom-lbl{font-size:11px;color:rgba(255,255,255,.9);white-space:nowrap;font-weight:500;}
+
+.cclr{background:rgba(200,40,40,.8);color:#fff;border:none;border-radius:3px;font-size:11px;padding:4px 7px;cursor:pointer;}
+.cdef{background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:3px;font-size:11px;padding:4px 7px;cursor:pointer; transition:background .1s;}
+.cdef:hover{background:rgba(255,255,255,.2);}
 
 /* ADD ROW */
 #addbar{display:none;padding:10px 0;gap:7px;flex-wrap:wrap;align-items:center}
@@ -157,6 +212,7 @@ body.em #addbar{display:flex}
 .albl{font-size:11px;color:#999}
 .abtn{padding:5px 11px;border:1px solid #ddd;border-radius:4px;font-size:11px;color:#666;background:#fff;cursor:pointer}
 .abtn:hover{border-color:#00a0ff;color:#00a0ff}
+.abtn-div{border-style:dashed;}
 
 /* LIGHTBOX */
 #lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:200;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:10px}
@@ -188,9 +244,8 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
 /* No select */
 .cell-bg,.fs-item,.lb-thumb{-webkit-user-select:none;user-select:none}
 
-/* ═════ ПЕЧАТНАЯ ВЕРСИЯ (АЛЬБОМНЫЙ PDF) ═════ */
+/* ═════ ПЕЧАТНАЯ ВЕРСИЯ ═════ */
 @media print{
-  /* Устанавливаем Ландшафтную (горизонтальную) ориентацию */
   @page { margin: 0; size: A4 landscape; }
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 
@@ -199,49 +254,35 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
   .layout { padding: 12mm 16mm 0 16mm !important; }
   header { padding: 8mm 0 6mm !important; border-bottom: 1px solid #ddd; margin-bottom: 6px; }
 
-  #etb, #addbar, .rctrl, .resize-handle, #loading, #lb, #nda-toast, .ceo,
+  #etb, #addbar, .rctrl, .resize-handle, #loading, #lb, #nda-toast, .ceo, .div-edit-panel,
   .filmstrip, .cnt-badge, .hcv, .hpdf, footer, #lb-scroll-track,
   .hlinks { display: none !important; }
 
   .hright { align-items: flex-end; }
   .hcontacts { font-size: 11pt; color: #444; }
 
-  /* ЖЕСТКИЙ FLEXBOX ВМЕСТО GRID — защита от бага Chrome */
   .rw { break-inside: avoid; page-break-inside: avoid; margin-bottom: 4px !important; display: block !important; }
   #rows-wrap { padding: 4px 0; gap: 4px; display: block !important; }
   .rg { gap: 4px !important; display: flex !important; flex-wrap: nowrap !important; height: 100% !important; }
   
+  .div-wrap { background: transparent !important; border: none !important; }
+  
   .cell { position: relative !important; height: 100% !important; overflow: hidden !important; flex-shrink: 0 !important; background: transparent !important; }
   
-  /* Точные математические размеры колонок (4px - зазор между ними) */
   .sq  { width: calc(25% - 3px) !important; }
   .sp2 { width: calc(50% - 2px) !important; }
   .sp3 { width: calc(75% - 1px) !important; }
   .sp4 { width: 100% !important; }
   
-  /* Математическая печатная картинка (никаких transform!) */
-  .cell-print-img {
-    display: block !important;
-    position: absolute !important;
-    object-fit: cover !important;
-    max-width: none !important;
-    max-height: none !important;
-    -webkit-print-color-adjust: exact !important;
-  }
-  .cell-bg { display: none !important; }
+  .cell-print-img { display: none !important; }
+  .cell-bg { display: block !important; }
   
   .ccap { opacity: 1 !important; position: absolute !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 2 !important; }
-  .fill-ok, .cnt-badge { display: none !important; }
+  .ccap:not(.always-on) { opacity: 0 !important; }
+  .ccap.always-on { opacity: 1 !important; }
 
-  #print-footer {
-    display: block !important;
-    position: fixed; bottom: 0; left: 0; right: 0;
-    font-size: 8pt; color: #888; text-align: center;
-    border-top: 0.5pt solid #eee; padding: 4mm 8mm;
-    background: #fff;
-  }
+  .fill-ok, .cnt-badge { display: none !important; }
 }
-/* Скрываем печатную картинку на экране */
 .cell-print-img { display: none; }
 </style>
 </head>
@@ -263,13 +304,14 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
     <button class="ebtn eexit" onclick="exitEdit()">✕ Выйти</button>
   </div>
   <div class="etb-row">
-    <span class="el">Email</span><input class="ei" id="eemail" style="width:170px">
-    <span class="el">LinkedIn</span><input class="ei" id="eli" style="width:185px">
-    <span class="el">ArtStation</span><input class="ei" id="eas" style="width:185px">
-    <span class="el">Telegram</span><input class="ei" id="etg" style="width:155px" placeholder="https://t.me/...">
-    <span class="el">CV URL</span><input class="ei" id="ecv" style="width:185px" placeholder="Google Drive...">
-    <div class="esp"></div>
-    <button class="ebtn" style="background:#2a2a2a;color:#888" onclick="dlPDF()">↓ Portfolio PDF</button>
+    <span class="el">Email</span><input class="ei" id="eemail" style="width:140px">
+    <span class="el">LinkedIn</span><input class="ei" id="eli" style="width:140px">
+    <span class="el">ArtStation</span><input class="ei" id="eas" style="width:140px">
+    <span class="el">Telegram</span><input class="ei" id="etg" style="width:120px" placeholder="https://t.me/...">
+    <span style="color:#333; margin:0 4px">|</span>
+    <span class="el">CV URL</span><input class="ei" id="ecv" style="width:130px" placeholder="Ссылка на резюме...">
+    <span class="el">PDF URL</span><input class="ei" id="epdf" style="width:130px" placeholder="Ссылка на портфолио...">
+    <span class="el">GA ID</span><input class="ei" id="ega" style="width:105px" placeholder="G-XXXXXXX">
   </div>
 </div>
 
@@ -300,6 +342,8 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
     <button class="abtn" onclick="addRow('sq1sp3')">■▬▬ 1+3</button>
     <button class="abtn" onclick="addRow('sp2sp2')">▬▬ Два широких</button>
     <button class="abtn" onclick="addRow('sp4')">▬▬▬▬ Вся ширина</button>
+    <span style="color:#ddd; margin:0 4px;">|</span>
+    <button class="abtn abtn-div" onclick="addRow('divider')">➖ Разделитель</button>
   </div>
 </div>
 
@@ -323,13 +367,8 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
 
 <div id="nda-toast">🔒 NDA · Mariia Filippova — материалы защищены</div>
 
-<!-- PDF footer -->
-<div id="print-footer" style="display:none">
-  <span id="pf-name"></span> &nbsp;·&nbsp; <span id="pf-email"></span> &nbsp;·&nbsp; <span id="pf-tg"></span>
-</div>
-
 <script>
-/* ══ CONFIG ══ */
+/* ══ CONFIG (РОДНЫЕ КЛЮЧИ МАШИ СОХРАНЕНЫ) ══ */
 var BIN_ID  = '6a857598f5f4af5e2927e1b3';
 var API_KEY = '$2a$10$yiqe27PHrmTV/4eeP4rI4.R6d/kXdKb44upyfo9IY8XcU8gcKxsfC';
 var SECRET  = 'bong2026';
@@ -340,34 +379,43 @@ var S = {
   line2:'Wargaming · Belgrade, Serbia', line3:'',
   email:'marybong13@gmail.com',
   liUrl:'https://linkedin.com/in/mariia-filippova-marybong',
-  asUrl:'https://artstation.com/marybong', tgUrl:'', cvUrl:'', rows:[]
+  asUrl:'https://artstation.com/marybong', tgUrl:'', cvUrl:'', pdfUrl:'', gaId:'',
+  divTextColor:'#888888', divLineColor:'#e0e0e0',
+  rows:[]
 };
 
 var RC = {
   sq4:{cells:4,spans:[1,1,1,1]}, sp2sq2:{cells:3,spans:[2,1,1]},
   sq2sp2:{cells:3,spans:[1,1,2]}, sp3sq1:{cells:2,spans:[3,1]},
   sq1sp3:{cells:2,spans:[1,3]}, sp2sp2:{cells:2,spans:[2,2]},
-  sp4:{cells:1,spans:[4]}
+  sp4:{cells:1,spans:[4]},
+  divider: {cells:0, isDivider:true}
 };
+
 function sc(n){return n===1?'sq':'sp'+n;}
 function gd(url){
-  if(!url)return '';
+  if(!url || !url.trim())return '';
   var m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
   if(m)return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1200';
-  return url;
+  return url.trim();
 }
 function gdFull(url){
-  if(!url)return '';
+  if(!url || !url.trim())return '';
   var m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
   if(m)return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w3000';
-  return url;
+  return url.trim();
 }
 
 /* API */
 function apiLoad(){
   return fetch('https://api.jsonbin.io/v3/b/'+BIN_ID+'/latest',{headers:{'X-Master-Key':API_KEY}})
     .then(function(r){return r.json();})
-    .then(function(d){if(d&&d.record&&d.record.rows!==undefined){S=d.record;localStorage.setItem('mf_cache',JSON.stringify(S));}})
+    .then(function(d){
+        if(d&&d.record&&d.record.rows!==undefined){
+            S=Object.assign(S, d.record);
+            localStorage.setItem('mf_cache',JSON.stringify(S));
+        }
+    })
     .catch(function(){});
 }
 function apiSave(){
@@ -384,6 +432,21 @@ function flash(msg,err){
   if(!err)setTimeout(function(){f.className='efl';},2000);
 }
 
+/* Google Analytics Injector */
+var gaInit = false;
+function initGA() {
+  if(gaInit || !S.gaId) return;
+  gaInit = true;
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + S.gaId;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', S.gaId);
+}
+
 /* HEADER */
 function renderHeader(){
   document.getElementById('hname').textContent=S.name||'';
@@ -393,7 +456,6 @@ function renderHeader(){
     el.textContent=val;el.style.display=val?'':'none';
   });
   
-  // ФАЙЛ ПДФ ПО УМОЛЧАНИЮ — ГЕНЕРИРУЕТСЯ ИЗ ТАЙТЛА
   document.title = S.name ? 'Portfolio ' + S.name : 'Portfolio Mariia Filippova';
   
   var hl=document.getElementById('hlinks');hl.innerHTML='';
@@ -406,10 +468,23 @@ function renderHeader(){
   }
   lnk(S.liUrl,'LinkedIn');
   lnk(S.asUrl,'ArtStation');
-  if(S.cvUrl)lnk(gd(S.cvUrl),'↓ CV','hcv');
-  if(!IS_EDIT){
-    var pb=document.createElement('button');pb.className='hpdf';
-    pb.textContent='↓ Portfolio PDF';pb.onclick=dlPDF;hl.appendChild(pb);
+  
+  // КНОПКИ СКАЧИВАНИЯ
+  if(S.cvUrl) {
+      var cvb = document.createElement('a');
+      cvb.className = 'hcv';
+      cvb.textContent = '↓ CV';
+      cvb.href = S.cvUrl;
+      cvb.target = '_blank';
+      hl.appendChild(cvb);
+  }
+  if(S.pdfUrl) {
+      var pb = document.createElement('a');
+      pb.className = 'hpdf';
+      pb.textContent = '↓ Portfolio PDF';
+      pb.href = S.pdfUrl;
+      pb.target = '_blank';
+      hl.appendChild(pb);
   }
 
   var hc=document.getElementById('hcontacts');
@@ -423,10 +498,6 @@ function renderHeader(){
     }
     hc.textContent = ct.join(' · ');
   }
-
-  var pf=document.getElementById('pf-name');if(pf)pf.textContent=S.name||'';
-  var pe=document.getElementById('pf-email');if(pe)pe.textContent=S.email||'';
-  var pt=document.getElementById('pf-tg');if(pt)pt.textContent=S.tgUrl?S.tgUrl.replace('https://',''):'';
 }
 
 /* DRAG & DROP ROWS */
@@ -465,17 +536,16 @@ function makeResizable(handle,row,rg,rw){
     e.preventDefault();e.stopPropagation();
     handle.classList.add('active');
     var startY=e.clientY;
-    var startH=row.rowH||220;
+    var startH=row.rowH||(rg?220:60);
     function onMove(e){
       var dy=e.clientY-startY;
-      row.rowH=Math.max(60,Math.min(800,startH+dy));
+      row.rowH=Math.max(20,Math.min(800,startH+dy));
       rw.style.height=row.rowH+'px';
-      rg.style.gridAutoRows=row.rowH+'px';
-      
-      if(IS_EDIT){
-          rg.querySelectorAll('.cell').forEach(function(c){
-              if(c.updateFill) c.updateFill();
-          });
+      if(rg){
+          rg.style.gridAutoRows=row.rowH+'px';
+          if(IS_EDIT){
+              rg.querySelectorAll('.cell').forEach(function(c){ if(c.updateFill) c.updateFill(); });
+          }
       }
     }
     function onUp(){
@@ -521,10 +591,10 @@ function checkCellFill(cellDiv, cellData, fo) {
     var bgW, bgH;
     
     if (z === 100) {
-        if (car > iar) { // ячейка шире картинки пропорционально
+        if (car > iar) { 
             bgW = cw;
             bgH = cw / iar;
-        } else { // ячейка выше картинки
+        } else { 
             bgH = ch;
             bgW = ch * iar;
         }
@@ -569,15 +639,20 @@ function renderGrid(){
 
   S.rows.forEach(function(row){
     var cfg=RC[row.type];if(!cfg)return;
-    if(!row.rowH)row.rowH=220;
+    var isDiv = cfg.isDivider;
+    
+    if(!row.rowH)row.rowH=isDiv?60:220;
     if(!row.cells)row.cells=[];
 
     var rw=document.createElement('div');rw.className='rw';
     rw.style.height = row.rowH + 'px';
 
-    var rg=document.createElement('div');rg.className='rg';
-    rg.style.gridAutoRows=row.rowH+'px';
-    rg.style.height='100%'; 
+    var rg = null;
+    if(!isDiv){
+        rg=document.createElement('div');rg.className='rg';
+        rg.style.gridAutoRows=row.rowH+'px';
+        rg.style.height='100%'; 
+    }
 
     if(IS_EDIT){
       var rc=document.createElement('div');rc.className='rctrl';
@@ -585,16 +660,39 @@ function renderGrid(){
       var grip=document.createElement('span');grip.className='drag-grip';grip.textContent='⠿';grip.title='Перетащить строку';
       rc.appendChild(grip);
       
-      var sqBtn=document.createElement('button');sqBtn.className='rctrl-btn sq-btn';
-      sqBtn.textContent='⛶ 1:1';sqBtn.title='Сделать квадратным (по ширине 1 колонки)';
-      sqBtn.onclick=function(){
-          var colW = (rg.clientWidth - 12) / 4;
-          row.rowH = Math.round(colW);
-          rw.style.height = row.rowH + 'px';
-          rg.style.gridAutoRows = row.rowH + 'px';
-          rg.querySelectorAll('.cell').forEach(function(c){ if(c.updateFill) c.updateFill(); });
+      var defHeight = isDiv ? 60 : 220;
+      var btnDef = document.createElement('button');
+      btnDef.className = 'rctrl-btn sq-btn';
+      btnDef.textContent = '⟲ ' + defHeight + 'px';
+      btnDef.title = 'Сбросить высоту к базовой';
+      btnDef.onclick = function(){
+          row.rowH = defHeight;
+          rw.style.height = defHeight + 'px';
+          if(rg){
+              rg.style.gridAutoRows = defHeight + 'px';
+              rg.querySelectorAll('.cell').forEach(function(c){ if(c.updateFill) c.updateFill(); });
+          }
       };
-      rc.appendChild(sqBtn);
+      rc.appendChild(btnDef);
+      
+      var btnDup = document.createElement('button');
+      btnDup.className = 'rctrl-btn sq-btn';
+      btnDup.textContent = '⧉ Копия';
+      btnDup.title = 'Создать такую же строку ниже (пустую)';
+      btnDup.onclick = function(){
+          var newRow = { id: 'r'+Date.now(), type: row.type, rowH: row.rowH, cells: [] };
+          if(!isDiv){
+              for(var i=0; i<cfg.cells; i++) newRow.cells.push({url:'',caption:'',showFilmstrip:true,images:[]});
+          } else {
+              newRow.divText = row.divText || '';
+              newRow.divZoom = row.divZoom || 100;
+              newRow.textBold = row.textBold || false;
+          }
+          var idx = S.rows.findIndex(function(r){return r.id===row.id;});
+          S.rows.splice(idx+1, 0, newRow);
+          renderGrid();
+      };
+      rc.appendChild(btnDup);
 
       var db=document.createElement('button');db.className='rctrl-btn del-btn';db.textContent='✕ Удалить';
       (function(id){db.onclick=function(){if(!confirm('Удалить строку?'))return;S.rows=S.rows.filter(function(r){return r.id!==id;});renderGrid();};})(row.id);
@@ -605,297 +703,373 @@ function renderGrid(){
       makeRowDraggable(rw,row.id,grip);
     }
 
-    row.cells.forEach(function(cell,ci){
-      if(ci>=cfg.cells)return;
-      var span=cfg.spans[ci]||1;
-      var div=document.createElement('div');div.className='cell '+sc(span);
-      var imgUrl=gd(cell.url||'');
-
-      var bg=document.createElement('div');bg.className='cell-bg';
-      var zoomVal=cell.zoom||100;
-      var posX=cell.posX!==undefined?cell.posX:50;
-      bg.style.backgroundSize=zoomVal===100?'cover':zoomVal+'%';
-      bg.style.backgroundPosition=posX+'% center';
-      if(imgUrl)bg.style.backgroundImage='url('+imgUrl+')';
-      div.appendChild(bg);
-
-      if(!imgUrl&&IS_EDIT){
-        var ph=document.createElement('div');ph.className='cno';ph.textContent='Нет картинки';div.appendChild(ph);
-      }
-      if(imgUrl&&!IS_EDIT){
-        var ndaImg=document.createElement('img');
-        ndaImg.src=NDA_SRC;
-        ndaImg.alt='NDA Protected — Mariia Filippova';
-        ndaImg.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;z-index:1;cursor:pointer';
-        div.appendChild(ndaImg);
-      }
-
-      var extras=(cell.images||[]).filter(function(x){return x&&x.url;});
-      if(extras.length>0&&cell.showFilmstrip!==false&&!IS_EDIT){
-        var fs=document.createElement('div');fs.className='filmstrip vis';
-        var allImgs=[{url:cell.url}].concat(extras);
-        var origUrl=imgUrl;
-        allImgs.forEach(function(im,ii){
-          var ft=document.createElement('img');
-          ft.className='fs-item'+(ii===0?' act':'');
-          ft.src=gd(im.url);ft.alt='';
-          ft.addEventListener('mouseenter',function(){
-            bg.style.backgroundImage='url('+gd(im.url)+')';
-            fs.querySelectorAll('.fs-item').forEach(function(x){x.classList.remove('act');});
-            ft.classList.add('act');
-          });
-          fs.appendChild(ft);
-        });
-        fs.addEventListener('mouseleave',function(){
-          bg.style.backgroundImage=origUrl?'url('+origUrl+')':'';
-          fs.querySelectorAll('.fs-item').forEach(function(x,xi){x.classList.toggle('act',xi===0);});
-        });
-        div.appendChild(fs);
-      } else if(extras.length>0&&!IS_EDIT){
-        var badge=document.createElement('div');badge.className='cnt-badge';badge.textContent='⊞ '+(extras.length+1);div.appendChild(badge);
-      }
-
-      var cap=document.createElement('div');cap.className='ccap';cap.textContent=cell.caption||'';div.appendChild(cap);
-
-      /* ПЕЧАТНАЯ КАРТИНКА - ЧИСТАЯ МАТЕМАТИКА БЕЗ TRANSFORM */
-      var pimg = null;
-      if(imgUrl){
-        pimg=document.createElement('img');
-        pimg.src=gdFull(imgUrl); 
-        pimg.alt='';
-        pimg.className='cell-print-img';
-        div.appendChild(pimg);
-      }
-      
-      function updatePrintImg() {
-        if(!pimg) return;
-        var z = cell.zoom || 100;
-        var px = cell.posX !== undefined ? cell.posX : 50;
+    if(isDiv) {
+        var dwrap = document.createElement('div');
+        dwrap.className = 'div-wrap';
         
-        pimg.style.width = z + '%';
-        pimg.style.height = z + '%';
-        pimg.style.left = ((100 - z) * (px / 100)) + '%';
-        pimg.style.top = ((100 - z) * 0.5) + '%';
-      }
+        var dt = row.divText || '';
+        var dz = row.divZoom || 100;
+        var dBold = row.textBold || false;
+        
+        var dTextColor = S.divTextColor || '#888888';
+        var dLineColor = S.divLineColor || '#e0e0e0';
+        
+        dwrap.style.setProperty('--line-color', dLineColor);
+        
+        var dtext = document.createElement('div');
+        dtext.className = 'div-text';
+        dtext.textContent = dt;
+        dtext.style.fontSize = (12 * (dz / 100)) + 'px';
+        dtext.style.color = dTextColor;
+        dtext.style.fontWeight = dBold ? '700' : '400';
+        
+        dwrap.appendChild(dtext);
 
-      if(IS_EDIT){
-        var swapActive=false,swapThreshold=8,swapStartX=0,swapStartY=0;
-        div.addEventListener('mousedown',function(e){
-          if(e.target.closest('.ceo')||e.target.closest('.pos-row')||e.target.closest('.zoom-row')||e.target.closest('.zoom-num')) return;
-          swapActive=false;swapStartX=e.clientX;swapStartY=e.clientY;
-          cellDragSrc={rowId:row.id,ci:ci};
-        });
-        div.addEventListener('mousemove',function(e){
-          if(!cellDragSrc.rowId) return;
-          if(!swapActive){
-            if(Math.abs(e.clientX-swapStartX)>swapThreshold||Math.abs(e.clientY-swapStartY)>swapThreshold){
-              swapActive=true;div.classList.add('cell-dragging');
+        if(IS_EDIT) {
+            var editPanel = document.createElement('div');
+            editPanel.className = 'div-edit-panel';
+            
+            var dInp = document.createElement('input');
+            dInp.className = 'cin';
+            dInp.style.width = '200px';
+            dInp.placeholder = 'Текст (пусто = линия)';
+            dInp.value = dt;
+            dInp.onchange = function(){ row.divText = this.value; renderGrid(); };
+            
+            var zlbl = document.createElement('span'); zlbl.className = 'zoom-lbl'; zlbl.textContent = 'Размер:';
+            var dZoom = document.createElement('input'); dZoom.type = 'number'; dZoom.className = 'zoom-num';
+            dZoom.min = 50; dZoom.max = 500; dZoom.value = dz;
+            
+            function applyDZoom(val) {
+                row.divZoom = Math.min(500, Math.max(50, parseInt(val)||100));
+                dZoom.value = row.divZoom;
+                dtext.style.fontSize = (12 * (row.divZoom / 100)) + 'px';
             }
-          }
-        });
-        div.addEventListener('mouseup',function(){
-          div.classList.remove('cell-dragging');
-          swapActive=false;
-        });
-        div.addEventListener('mouseenter',function(){
-          if(cellDragSrc.rowId&&(cellDragSrc.rowId!==row.id||cellDragSrc.ci!==ci)){
-            div.classList.add('cell-drag-over');
-          }
-        });
-        div.addEventListener('mouseleave',function(){div.classList.remove('cell-drag-over');});
-        div.addEventListener('mouseup',function(){
-          div.classList.remove('cell-drag-over');
-          if(cellDragSrc.rowId&&(cellDragSrc.rowId!==row.id||cellDragSrc.ci!==ci)){
-            var sRow=S.rows.find(function(r){return r.id===cellDragSrc.rowId;});
-            var dRow=S.rows.find(function(r){return r.id===row.id;});
-            if(sRow&&dRow&&sRow.cells[cellDragSrc.ci]&&dRow.cells[ci]){
-              var tmp=JSON.parse(JSON.stringify(sRow.cells[cellDragSrc.ci]));
-              sRow.cells[cellDragSrc.ci]=JSON.parse(JSON.stringify(dRow.cells[ci]));
-              dRow.cells[ci]=tmp;
-              renderGrid();
-            }
-          }
-          cellDragSrc={rowId:null,ci:null};
-        });
+            dZoom.addEventListener('change', function(){ applyDZoom(this.value); });
+            dZoom.addEventListener('input', function(){ applyDZoom(this.value); });
+            dZoom.addEventListener('wheel', function(e){
+                e.preventDefault(); applyDZoom((row.divZoom||100) + (e.deltaY<0 ? 5 : -5));
+            }, {passive:false});
+            
+            var boldLbl = document.createElement('label'); boldLbl.className='eo-label'; boldLbl.style.display='flex'; boldLbl.style.alignItems='center'; boldLbl.style.gap='4px';
+            var boldChk = document.createElement('input'); boldChk.type='checkbox'; boldChk.className='eo-check';
+            boldChk.checked = dBold;
+            boldChk.onchange = function() { row.textBold = this.checked; renderGrid(); };
+            boldLbl.appendChild(boldChk); boldLbl.appendChild(document.createTextNode('Жирный'));
+            
+            var tcLbl = document.createElement('span'); tcLbl.className='eo-label'; tcLbl.textContent='Текст:';
+            var tcInp = document.createElement('input'); tcInp.type='color'; tcInp.className='color-picker';
+            tcInp.value = dTextColor;
+            tcInp.onchange = function() { S.divTextColor = this.value; renderGrid(); };
+            
+            var lcLbl = document.createElement('span'); lcLbl.className='eo-label'; lcLbl.textContent='Линия:';
+            var lcInp = document.createElement('input'); lcInp.type='color'; lcInp.className='color-picker';
+            lcInp.value = dLineColor;
+            lcInp.onchange = function() { S.divLineColor = this.value; renderGrid(); };
 
-        var eo=document.createElement('div');eo.className='ceo';
-        var ui=document.createElement('input');ui.className='cin';
-        ui.placeholder='Google Drive ссылка (главная картинка)...';ui.value=cell.url||'';
-        ui.onchange=function(){cell.url=this.value;renderGrid();};
-        var ci2=document.createElement('input');ci2.className='cin';
-        ci2.placeholder='Подпись...';ci2.value=cell.caption||'';
-        ci2.onchange=function(){cell.caption=this.value;};
-
-        var zrow=document.createElement('div');zrow.className='zoom-row';
-        var zlbl=document.createElement('span');zlbl.className='zoom-lbl';zlbl.textContent='Масштаб:';
-        var znum=document.createElement('input');znum.type='number';znum.className='zoom-num';
-        znum.min=30;znum.max=300;znum.value=cell.zoom||100;
-        var zpct=document.createElement('span');zpct.className='zoom-lbl';zpct.textContent='%';
-        function applyZoom(val){
-          cell.zoom=Math.min(300,Math.max(30,parseInt(val)||100));
-          znum.value=cell.zoom;
-          bg.style.backgroundSize=cell.zoom===100?'cover':cell.zoom+'%';
-          updatePrintImg();
-          if(div.updateFill) div.updateFill();
+            editPanel.appendChild(dInp);
+            editPanel.appendChild(zlbl);
+            editPanel.appendChild(dZoom);
+            editPanel.appendChild(boldLbl);
+            editPanel.appendChild(tcLbl);
+            editPanel.appendChild(tcInp);
+            editPanel.appendChild(lcLbl);
+            editPanel.appendChild(lcInp);
+            
+            dwrap.appendChild(editPanel);
         }
-        znum.addEventListener('change',function(){applyZoom(this.value);});
-        znum.addEventListener('input',function(){applyZoom(this.value);});
-        znum.addEventListener('mousedown',function(e){e.stopPropagation();});
-        znum.addEventListener('wheel',function(e){
-          e.preventDefault();
-          applyZoom((cell.zoom||100)+(e.deltaY<0?1:-1));
-        },{passive:false});
-        zrow.appendChild(zlbl);zrow.appendChild(znum);zrow.appendChild(zpct);
 
-        var prow=document.createElement('div');prow.className='pos-row';
-        var plbl=document.createElement('span');plbl.className='zoom-lbl';plbl.textContent='Позиция:';
-        var pwrap=document.createElement('div');pwrap.className='pos-bar-wrap';
-        var pthumb=document.createElement('div');pthumb.className='pos-bar-thumb';
-        var picon=document.createElement('div');picon.className='pos-bar-icon';picon.textContent='◂▸';
-        pwrap.appendChild(pthumb);pwrap.appendChild(picon);
+        rw.appendChild(dwrap);
+    } else {
+        row.cells.forEach(function(cell,ci){
+          if(ci>=cfg.cells)return;
+          var span=cfg.spans[ci]||1;
+          var div=document.createElement('div');div.className='cell '+sc(span);
+          var imgUrl=gd(cell.url||'');
 
-        function applyPos(px){
-          cell.posX=Math.min(100,Math.max(0,Math.round(px)));
-          pthumb.style.left=cell.posX+'%';
-          bg.style.backgroundPosition=cell.posX+'% center';
-          updatePrintImg();
-        }
-        applyPos(cell.posX!==undefined?cell.posX:50);
+          var bg=document.createElement('div');bg.className='cell-bg';
+          var zoomVal=cell.zoom||100;
+          var posX=cell.posX!==undefined?cell.posX:50;
+          bg.style.backgroundSize=zoomVal===100?'cover':zoomVal+'%';
+          bg.style.backgroundPosition=posX+'% center';
+          if(imgUrl)bg.style.backgroundImage='url('+imgUrl+')';
+          div.appendChild(bg);
 
-        pwrap.addEventListener('mousedown',function(e){
-          e.preventDefault();e.stopPropagation();
-          var rect=pwrap.getBoundingClientRect();
-          var startX=e.clientX,startPx=cell.posX!==undefined?cell.posX:50;
-          function onMove(ev){
-            var dx=ev.clientX-startX;
-            var dpct=dx/rect.width*100;
-            applyPos(startPx+dpct);
+          if(!imgUrl&&IS_EDIT){
+            var ph=document.createElement('div');ph.className='cno';ph.textContent='Нет картинки';div.appendChild(ph);
           }
-          function onUp(){ document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp); }
-          document.addEventListener('mousemove',onMove);
-          document.addEventListener('mouseup',onUp);
-        });
-        
-        // КОЛЕСИКО НА ПОЗИЦИИ 
-        prow.addEventListener('wheel', function(e){
-            e.preventDefault();
-            e.stopPropagation();
-            var delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
-            var step = delta > 0 ? 2 : -2; 
-            var currentPx = cell.posX !== undefined ? cell.posX : 50;
-            applyPos(currentPx + step);
-        }, {passive: false});
+          if(imgUrl&&!IS_EDIT){
+            var ndaImg=document.createElement('img');
+            ndaImg.src=NDA_SRC;
+            ndaImg.alt='NDA Protected — Mariia Filippova';
+            ndaImg.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;z-index:1;cursor:pointer';
+            div.appendChild(ndaImg);
+          }
 
-        prow.appendChild(plbl);prow.appendChild(pwrap);
-        var pReset=document.createElement('button');pReset.className='pos-reset-btn';
-        pReset.textContent='⊙';pReset.title='По центру';
-        pReset.addEventListener('mousedown',function(e){e.stopPropagation();});
-        pReset.onclick=function(){applyPos(50);};
-        prow.appendChild(pReset);
-        
-        var frow=document.createElement('div');frow.className='eo-row';
-        var fchk=document.createElement('input');fchk.type='checkbox';fchk.className='eo-check';
-        fchk.checked=cell.showFilmstrip!==false;
-        fchk.onchange=function(){cell.showFilmstrip=this.checked;};
-        var flbl=document.createElement('span');flbl.className='eo-label';flbl.textContent='Filmstrip на главной';
-        frow.appendChild(fchk);frow.appendChild(flbl);
-        
-        var elbl=document.createElement('div');elbl.className='eo-label';elbl.style.marginTop='4px';elbl.textContent='Доп. изображения:';
-        var extList=document.createElement('div');extList.className='extra-list';
-        function renderExtras(){
-          extList.innerHTML='';
-          var dragIdx=null;
-          (cell.images||[]).forEach(function(im,xi){
-            var it=document.createElement('div');
-            it.className='extra-item';it.setAttribute('draggable','true');it.title='Тяни чтобы переставить';
-            var ibg=document.createElement('div');ibg.className='eibg';
-            ibg.style.backgroundImage='url('+gd(im.url)+')';
-            var xb=document.createElement('button');xb.className='extra-del';xb.textContent='×';
-            (function(i){xb.onclick=function(e){e.stopPropagation();cell.images.splice(i,1);renderExtras();};})(xi);
+          var extras=(cell.images||[]).filter(function(x){return x&&x.url;});
+          if(extras.length>0&&cell.showFilmstrip!==false&&!IS_EDIT){
+            var fs=document.createElement('div');fs.className='filmstrip vis';
+            var allImgs=[{url:cell.url}].concat(extras);
+            var origUrl=imgUrl;
+            allImgs.forEach(function(im,ii){
+              var ft=document.createElement('img');
+              ft.className='fs-item'+(ii===0?' act':'');
+              ft.src=gd(im.url);ft.alt='';
+              ft.addEventListener('mouseenter',function(){
+                bg.style.backgroundImage='url('+gd(im.url)+')';
+                fs.querySelectorAll('.fs-item').forEach(function(x){x.classList.remove('act');});
+                ft.classList.add('act');
+              });
+              fs.appendChild(ft);
+            });
+            fs.addEventListener('mouseleave',function(){
+              bg.style.backgroundImage=origUrl?'url('+origUrl+')':'';
+              fs.querySelectorAll('.fs-item').forEach(function(x,xi){x.classList.toggle('act',xi===0);});
+            });
+            div.appendChild(fs);
+          } else if(extras.length>0&&!IS_EDIT){
+            var badge=document.createElement('div');badge.className='cnt-badge';badge.textContent='⊞ '+(extras.length+1);div.appendChild(badge);
+          }
 
-            it.addEventListener('dragstart',function(e){
-              e.stopPropagation();dragIdx=xi;
-              setTimeout(function(){it.classList.add('dragging');},0);
+          var cap=document.createElement('div');cap.className='ccap';cap.textContent=cell.caption||'';div.appendChild(cap);
+
+          /* ПЕЧАТНАЯ КАРТИНКА */
+          var pimg = null;
+          if(imgUrl){
+            pimg=document.createElement('img');
+            pimg.src=gdFull(imgUrl); 
+            pimg.alt='';
+            pimg.className='cell-print-img';
+            div.appendChild(pimg);
+          }
+          
+          function updatePrintImg() {
+            if(!pimg) return;
+            var z = cell.zoom || 100;
+            var px = cell.posX !== undefined ? cell.posX : 50;
+            pimg.style.width = z + '%';
+            pimg.style.height = z + '%';
+            pimg.style.left = ((100 - z) * (px / 100)) + '%';
+            pimg.style.top = ((100 - z) * 0.5) + '%';
+          }
+
+          if(IS_EDIT){
+            var swapActive=false,swapThreshold=8,swapStartX=0,swapStartY=0;
+            div.addEventListener('mousedown',function(e){
+              if(e.target.closest('.ceo')||e.target.closest('.pos-row')||e.target.closest('.zoom-row')||e.target.closest('.zoom-num')) return;
+              swapActive=false;swapStartX=e.clientX;swapStartY=e.clientY;
+              cellDragSrc={rowId:row.id,ci:ci};
             });
-            it.addEventListener('dragend',function(){
-              it.classList.remove('dragging');dragIdx=null;
-              extList.querySelectorAll('.extra-item').forEach(function(x){x.classList.remove('drag-over');});
-            });
-            it.addEventListener('dragover',function(e){
-              e.preventDefault();e.stopPropagation();
-              extList.querySelectorAll('.extra-item').forEach(function(x){x.classList.remove('drag-over');});
-              it.classList.add('drag-over');
-            });
-            it.addEventListener('dragleave',function(){it.classList.remove('drag-over');});
-            it.addEventListener('drop',function(e){
-              e.preventDefault();e.stopPropagation();
-              it.classList.remove('drag-over');
-              if(dragIdx!==null&&dragIdx!==xi){
-                var tmp=cell.images[dragIdx];
-                cell.images[dragIdx]=cell.images[xi];
-                cell.images[xi]=tmp;
-                renderExtras();
+            div.addEventListener('mousemove',function(e){
+              if(!cellDragSrc.rowId) return;
+              if(!swapActive){
+                if(Math.abs(e.clientX-swapStartX)>swapThreshold||Math.abs(e.clientY-swapStartY)>swapThreshold){
+                  swapActive=true;div.classList.add('cell-dragging');
+                }
               }
-              dragIdx=null;
+            });
+            div.addEventListener('mouseup',function(){
+              div.classList.remove('cell-dragging');
+              swapActive=false;
+            });
+            div.addEventListener('mouseenter',function(){
+              if(cellDragSrc.rowId&&(cellDragSrc.rowId!==row.id||cellDragSrc.ci!==ci)){
+                div.classList.add('cell-drag-over');
+              }
+            });
+            div.addEventListener('mouseleave',function(){div.classList.remove('cell-drag-over');});
+            div.addEventListener('mouseup',function(){
+              div.classList.remove('cell-drag-over');
+              if(cellDragSrc.rowId&&(cellDragSrc.rowId!==row.id||cellDragSrc.ci!==ci)){
+                var sRow=S.rows.find(function(r){return r.id===cellDragSrc.rowId;});
+                var dRow=S.rows.find(function(r){return r.id===row.id;});
+                if(sRow&&dRow&&sRow.cells[cellDragSrc.ci]&&dRow.cells[ci]){
+                  var tmp=JSON.parse(JSON.stringify(sRow.cells[cellDragSrc.ci]));
+                  sRow.cells[cellDragSrc.ci]=JSON.parse(JSON.stringify(dRow.cells[ci]));
+                  dRow.cells[ci]=tmp;
+                  renderGrid();
+                }
+              }
+              cellDragSrc={rowId:null,ci:null};
             });
 
-            it.appendChild(ibg);it.appendChild(xb);extList.appendChild(it);
-          });
-        }
-        renderExtras();
-        var addExt=document.createElement('input');addExt.className='cin';
-        addExt.placeholder='URL доп. картинки → Enter';addExt.style.marginTop='3px';
-        addExt.onkeydown=function(e){
-          if(e.key==='Enter'&&this.value.trim()){
-            if(!cell.images)cell.images=[];
-            cell.images.push({url:this.value.trim()});this.value='';renderExtras();
+            var eo=document.createElement('div');eo.className='ceo';
+            var ui=document.createElement('input');ui.className='cin';
+            ui.placeholder='Google Drive ссылка (главная картинка)...';ui.value=cell.url||'';
+            ui.onchange=function(){cell.url=this.value;renderGrid();};
+            var ci2=document.createElement('input');ci2.className='cin';
+            ci2.placeholder='Подпись...';ci2.value=cell.caption||'';
+            ci2.onchange=function(){cell.caption=this.value;};
+
+            var zrow=document.createElement('div');zrow.className='zoom-row';
+            var zlbl=document.createElement('span');zlbl.className='zoom-lbl';zlbl.textContent='Масштаб:';
+            var znum=document.createElement('input');znum.type='number';znum.className='zoom-num';
+            znum.min=30;znum.max=300;znum.value=cell.zoom||100;
+            var zpct=document.createElement('span');zpct.className='zoom-lbl';zpct.textContent='%';
+            function applyZoom(val){
+              cell.zoom=Math.min(300,Math.max(30,parseInt(val)||100));
+              znum.value=cell.zoom;
+              bg.style.backgroundSize=cell.zoom===100?'cover':cell.zoom+'%';
+              updatePrintImg();
+              if(div.updateFill) div.updateFill();
+            }
+            znum.addEventListener('change',function(){applyZoom(this.value);});
+            znum.addEventListener('input',function(){applyZoom(this.value);});
+            znum.addEventListener('mousedown',function(e){e.stopPropagation();});
+            znum.addEventListener('wheel',function(e){
+              e.preventDefault();
+              applyZoom((cell.zoom||100)+(e.deltaY<0?1:-1));
+            },{passive:false});
+            zrow.appendChild(zlbl);zrow.appendChild(znum);zrow.appendChild(zpct);
+
+            var prow=document.createElement('div');prow.className='pos-row';
+            var plbl=document.createElement('span');plbl.className='zoom-lbl';plbl.textContent='Позиция:';
+            var pwrap=document.createElement('div');pwrap.className='pos-bar-wrap';
+            var pthumb=document.createElement('div');pthumb.className='pos-bar-thumb';
+            var picon=document.createElement('div');picon.className='pos-bar-icon';picon.textContent='◂▸';
+            pwrap.appendChild(pthumb);pwrap.appendChild(picon);
+
+            function applyPos(px){
+              cell.posX=Math.min(100,Math.max(0,Math.round(px)));
+              pthumb.style.left=cell.posX+'%';
+              bg.style.backgroundPosition=cell.posX+'% center';
+              updatePrintImg();
+            }
+            applyPos(cell.posX!==undefined?cell.posX:50);
+
+            pwrap.addEventListener('mousedown',function(e){
+              e.preventDefault();e.stopPropagation();
+              var rect=pwrap.getBoundingClientRect();
+              var startX=e.clientX,startPx=cell.posX!==undefined?cell.posX:50;
+              function onMove(ev){
+                var dx=ev.clientX-startX;
+                var dpct=dx/rect.width*100;
+                applyPos(startPx+dpct);
+              }
+              function onUp(){ document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp); }
+              document.addEventListener('mousemove',onMove);
+              document.addEventListener('mouseup',onUp);
+            });
+            
+            prow.addEventListener('wheel', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                var delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
+                var step = delta > 0 ? 2 : -2; 
+                var currentPx = cell.posX !== undefined ? cell.posX : 50;
+                applyPos(currentPx + step);
+            }, {passive: false});
+
+            prow.appendChild(plbl);prow.appendChild(pwrap);
+            var pReset=document.createElement('button');pReset.className='pos-reset-btn';
+            pReset.textContent='⊙';pReset.title='По центру';
+            pReset.addEventListener('mousedown',function(e){e.stopPropagation();});
+            pReset.onclick=function(){applyPos(50);};
+            prow.appendChild(pReset);
+            
+            var frow=document.createElement('div');frow.className='eo-row';
+            var fchk=document.createElement('input');fchk.type='checkbox';fchk.className='eo-check';
+            fchk.checked=cell.showFilmstrip!==false;
+            fchk.onchange=function(){cell.showFilmstrip=this.checked;};
+            var flbl=document.createElement('span');flbl.className='eo-label';flbl.textContent='Filmstrip на главной';
+            frow.appendChild(fchk);frow.appendChild(flbl);
+            
+            var elbl=document.createElement('div');elbl.className='eo-label';elbl.style.marginTop='4px';elbl.textContent='Доп. изображения:';
+            var extList=document.createElement('div');extList.className='extra-list';
+            function renderExtras(){
+              extList.innerHTML='';
+              var dragIdx=null;
+              (cell.images||[]).forEach(function(im,xi){
+                var it=document.createElement('div');
+                it.className='extra-item';it.setAttribute('draggable','true');it.title='Тяни чтобы переставить';
+                var ibg=document.createElement('div');ibg.className='eibg';
+                ibg.style.backgroundImage='url('+gd(im.url)+')';
+                var xb=document.createElement('button');xb.className='extra-del';xb.textContent='×';
+                (function(i){xb.onclick=function(e){e.stopPropagation();cell.images.splice(i,1);renderExtras();};})(xi);
+
+                it.addEventListener('dragstart',function(e){
+                  e.stopPropagation();dragIdx=xi;
+                  setTimeout(function(){it.classList.add('dragging');},0);
+                });
+                it.addEventListener('dragend',function(){
+                  it.classList.remove('dragging');dragIdx=null;
+                  extList.querySelectorAll('.extra-item').forEach(function(x){x.classList.remove('drag-over');});
+                });
+                it.addEventListener('dragover',function(e){
+                  e.preventDefault();e.stopPropagation();
+                  extList.querySelectorAll('.extra-item').forEach(function(x){x.classList.remove('drag-over');});
+                  it.classList.add('drag-over');
+                });
+                it.addEventListener('dragleave',function(){it.classList.remove('drag-over');});
+                it.addEventListener('drop',function(e){
+                  e.preventDefault();e.stopPropagation();
+                  it.classList.remove('drag-over');
+                  if(dragIdx!==null&&dragIdx!==xi){
+                    var tmp=cell.images[dragIdx];
+                    cell.images[dragIdx]=cell.images[xi];
+                    cell.images[xi]=tmp;
+                    renderExtras();
+                  }
+                  dragIdx=null;
+                });
+
+                it.appendChild(ibg);it.appendChild(xb);extList.appendChild(it);
+              });
+            }
+            renderExtras();
+            var addExt=document.createElement('input');addExt.className='cin';
+            addExt.placeholder='URL доп. картинки → Enter';addExt.style.marginTop='3px';
+            addExt.onkeydown=function(e){
+              if(e.key==='Enter'&&this.value.trim()){
+                if(!cell.images)cell.images=[];
+                cell.images.push({url:this.value.trim()});this.value='';renderExtras();
+              }
+            };
+
+            var bottomRow=document.createElement('div');
+            bottomRow.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:4px';
+            var fo=document.createElement('div');fo.className='fill-ok';
+            
+            div.updateFill = function() { checkCellFill(div, cell, fo); };
+
+            var btnWrap=document.createElement('div');
+            btnWrap.style.display='flex';
+            btnWrap.style.gap='6px';
+
+            var cdef=document.createElement('button');
+            cdef.className='cdef';
+            cdef.textContent='⟲ Сброс';
+            cdef.onclick=function(){ applyZoom(100); applyPos(50); };
+
+            var clr=document.createElement('button');
+            clr.className='cclr';
+            clr.textContent='✕ Очистить';
+            (function(c){clr.onclick=function(){c.url='';c.caption='';c.images=[];c.zoom=100;c.posX=50;renderGrid();};})(cell);
+
+            btnWrap.appendChild(cdef);
+            btnWrap.appendChild(clr);
+            bottomRow.appendChild(fo);
+            bottomRow.appendChild(btnWrap);
+
+            eo.appendChild(ui);eo.appendChild(ci2);eo.appendChild(zrow);eo.appendChild(prow);eo.appendChild(frow);
+            eo.appendChild(elbl);eo.appendChild(extList);eo.appendChild(addExt);eo.appendChild(bottomRow);
+            div.appendChild(eo);
           }
-        };
 
-        var bottomRow=document.createElement('div');
-        bottomRow.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:4px';
-        var fo=document.createElement('div');fo.className='fill-ok';
-        
-        div.updateFill = function() { checkCellFill(div, cell, fo); };
+          var lbIdx=lbItems.length;
+          lbItems.push({cell:cell,imgUrl:imgUrl});
+          if(!IS_EDIT&&imgUrl){
+            (function(idx){div.onclick=function(){openLB(idx);};})(lbIdx);
+          }
 
-        var btnWrap=document.createElement('div');
-        btnWrap.style.display='flex';
-        btnWrap.style.gap='6px';
-
-        var cdef=document.createElement('button');
-        cdef.className='cdef';
-        cdef.textContent='⟲ Сброс';
-        cdef.onclick=function(){ applyZoom(100); applyPos(50); };
-
-        var clr=document.createElement('button');
-        clr.className='cclr';
-        clr.textContent='✕ Очистить';
-        (function(c){clr.onclick=function(){c.url='';c.caption='';c.images=[];c.zoom=100;c.posX=50;renderGrid();};})(cell);
-
-        btnWrap.appendChild(cdef);
-        btnWrap.appendChild(clr);
-        bottomRow.appendChild(fo);
-        bottomRow.appendChild(btnWrap);
-
-        eo.appendChild(ui);eo.appendChild(ci2);eo.appendChild(zrow);eo.appendChild(prow);eo.appendChild(frow);
-        eo.appendChild(elbl);eo.appendChild(extList);eo.appendChild(addExt);eo.appendChild(bottomRow);
-        div.appendChild(eo);
-      }
-
-      var lbIdx=lbItems.length;
-      lbItems.push({cell:cell,imgUrl:imgUrl});
-      if(!IS_EDIT&&imgUrl){
-        (function(idx){div.onclick=function(){openLB(idx);};})(lbIdx);
-      }
-
-      rg.appendChild(div);
-      updatePrintImg(); // Инициализация
-      if(IS_EDIT){
-          setTimeout(function(){ if(div.updateFill) div.updateFill(); }, 50);
-      }
-    });
-
-    rw.appendChild(rg);
+          rg.appendChild(div);
+          updatePrintImg(); 
+          if(IS_EDIT){
+              setTimeout(function(){ if(div.updateFill) div.updateFill(); }, 50);
+          }
+        });
+        rw.appendChild(rg);
+    }
 
     var rh=document.createElement('div');rh.className='resize-handle';
     var rb=document.createElement('div');rb.className='resize-bar';
@@ -997,7 +1171,6 @@ function showToast(){
   window.addEventListener('keyup',blockSave,true);
   document.addEventListener('keydown',blockSave,true);
   window.onkeydown=blockSave;
-  window.onbeforeprint=function(){return false;};
 })();
 
 var NDA_SRC='';
@@ -1034,18 +1207,13 @@ var NDA_SRC='';
   });
 })();
 
-function dlPDF(){
-  if(!confirm('⚠️ NDA Notice\n\nThese materials are confidential and for review purposes only.\nBy downloading you agree not to distribute them.\n\nContinue?'))return;
-  gtag('event','pdf_download',{event_category:'portfolio'});
-  window.print();
-}
-
 /* EDITOR */
 function addRow(type){
   var cfg=RC[type];if(!cfg)return;
   var cells=[];
   for(var i=0;i<cfg.cells;i++)cells.push({url:'',caption:'',showFilmstrip:true,images:[]});
-  S.rows.push({id:'r'+Date.now(),type:type,rowH:220,cells:cells});
+  var defH = cfg.isDivider ? 60 : 220;
+  S.rows.push({id:'r'+Date.now(),type:type,rowH:defH,cells:cells});
   renderGrid();
   setTimeout(function(){window.scrollTo(0,document.body.scrollHeight);},50);
 }
@@ -1059,6 +1227,8 @@ function fillEditor(){
   document.getElementById('eas').value=S.asUrl||'';
   document.getElementById('etg').value=S.tgUrl||'';
   document.getElementById('ecv').value=S.cvUrl||'';
+  document.getElementById('epdf').value=S.pdfUrl||'';
+  document.getElementById('ega').value=S.gaId||'';
 }
 function saveAll(){
   S.name=document.getElementById('ename').value;
@@ -1069,17 +1239,20 @@ function saveAll(){
   S.liUrl=document.getElementById('eli').value;
   S.asUrl=document.getElementById('eas').value;
   S.tgUrl=document.getElementById('etg').value;
-  S.cvUrl=document.getElementById('ecv').value;
+  S.cvUrl=document.getElementById('ecv').value.trim();
+  S.pdfUrl=document.getElementById('epdf').value.trim();
+  S.gaId=document.getElementById('ega').value.trim();
   renderHeader();flash('Сохраняю...',false);apiSave();
 }
 function exitEdit(){saveAll();setTimeout(function(){location.href=location.pathname;},800);}
 
 /* INIT */
 (function(){
-  try{var c=localStorage.getItem('mf_cache');if(c){S=JSON.parse(c);renderHeader();renderGrid();}}catch(e){}
+  try{var c=localStorage.getItem('mf_cache');if(c){S=JSON.parse(c);renderHeader();renderGrid(); initGA();}}catch(e){}
   apiLoad().then(function(){
     document.getElementById('loading').style.display='none';
     renderHeader();renderGrid();
+    initGA();
     if(IS_EDIT){
       document.getElementById('etb').style.display='flex';
       document.body.classList.add('em');
