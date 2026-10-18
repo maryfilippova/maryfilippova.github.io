@@ -9,6 +9,11 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://*.clarity.ms https://www.googletagmanager.com; connect-src 'self' https://api.jsonbin.io https://*.clarity.ms https://c.bing.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Portfolio Mariia Filippova</title>
+<script>
+/* Секретный ?a= убираем из адреса до загрузки Clarity и GA, чтобы токен не попал в аналитику.
+   Сам токен живёт в sessionStorage до закрытия вкладки. */
+(function(){try{var p=new URLSearchParams(location.search),t=p.get('a');if(t){sessionStorage.setItem('edit_tok',t);p.delete('a');var q=p.toString();history.replaceState(null,'',location.pathname+(q?'?'+q:'')+location.hash);}}catch(e){}})();
+</script>
 <script type="text/javascript">
 /* Microsoft Clarity */
 (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","y68zizkq9o");
@@ -417,7 +422,8 @@ var READ_KEY = '$2a$10$AsWn5e/WrU36jauvF2FrIeUFyXGvWV4InOQXm2rPYsXhVr3JUUntq';
 var EDIT_HASH = '0b7d9135be8ec8a2e9b224b37467c9f2c11cb48925239c519562494c123b1009';
 var IS_EDIT  = false;
 function checkEditToken(){
-  var t=new URLSearchParams(location.search).get('a');
+  var t=null;try{t=sessionStorage.getItem('edit_tok');}catch(e){}
+  t=t||new URLSearchParams(location.search).get('a');
   if(!t||!window.crypto||!crypto.subtle||!window.TextEncoder) return Promise.resolve(false);
   return crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)).then(function(b){
     var hex=Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2);}).join('');
@@ -520,7 +526,7 @@ function flash(msg,err){
 /* Google Analytics Injector */
 var gaInit = false;
 function initGA() {
-  if(gaInit || !/^G-[A-Z0-9]+$/i.test(S.gaId||'')) return;
+  if(gaInit || IS_EDIT || !/^G-[A-Z0-9]+$/i.test(S.gaId||'')) return; /* свои заходы в редактор не считаем */
   gaInit = true;
   var s = document.createElement('script');
   s.async = true;
@@ -529,7 +535,7 @@ function initGA() {
   window.dataLayer = window.dataLayer || [];
   window.gtag = function(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', S.gaId);
+  gtag('config', S.gaId, {page_location: location.origin + location.pathname}); /* без query-параметров */
 }
 
 /* HEADER */
@@ -1332,7 +1338,7 @@ function collectEditor(){
 function saveAll(){collectEditor();renderHeader();flash('Сохраняю...',false);apiSave();}
 function exitEdit(){
   collectEditor();renderHeader();flash('Сохраняю...',false);
-  apiSave().then(function(ok){ if(ok){forgetWriteKey();setTimeout(function(){location.href=location.pathname;},600);} });
+  apiSave().then(function(ok){ if(ok){forgetWriteKey();try{sessionStorage.removeItem('edit_tok');}catch(e){}setTimeout(function(){location.href=location.pathname;},600);} });
 }
 
 /* INIT */
