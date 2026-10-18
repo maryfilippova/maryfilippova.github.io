@@ -6,6 +6,8 @@
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
 <meta name="googlebot" content="noindex,nofollow">
 <meta name="description" content="">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://*.clarity.ms https://www.googletagmanager.com; connect-src 'self' https://api.jsonbin.io https://*.clarity.ms https://c.bing.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Portfolio Mariia Filippova</title>
 <script type="text/javascript">
 /* Microsoft Clarity */
@@ -245,6 +247,42 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
 .cell-bg,.fs-item,.lb-thumb{-webkit-user-select:none;user-select:none}
 
 /* ═════ ПЕЧАТНАЯ ВЕРСИЯ ═════ */
+/* ПЛАНШЕТЫ */
+@media screen and (max-width:1024px){
+  .layout{padding:0 24px}
+  body.em .layout{padding-left:80px}
+  .hname{font-size:28px}
+}
+/* ТЕЛЕФОНЫ: одна колонка, высота ячейки по пропорции экрана */
+@media screen and (max-width:700px){
+  .layout{padding:0 14px}
+  header{padding:18px 0 12px}
+  .hrow{flex-direction:column;align-items:flex-start}
+  .hright{align-items:flex-start}
+  .hname{font-size:24px}
+  .hline,.hcontacts{font-size:13px}
+  .hcontacts{word-break:break-word}
+  .hlinks{gap:10px}
+  .rw{height:auto!important}
+  .rg{grid-template-columns:1fr!important;grid-auto-rows:auto!important;height:auto!important}
+  .rg .cell{grid-column:1/-1;height:62vw;min-height:200px}
+  .div-wrap{min-height:44px}
+  .div-text{white-space:normal;text-align:center;letter-spacing:2px;padding:0 12px}
+  .ccap{opacity:1}
+  #lb{padding:10px}
+  #lb-scroll{max-width:100vw;max-height:65vh}
+  #lb-img{height:auto;max-height:65vh;max-width:none;width:auto}
+  #lb-thumbs{max-width:94vw}
+  .lb-thumb{height:42px}
+  #lb-cap{max-width:94vw}
+  footer{padding:18px 14px}
+  #nda-toast{white-space:normal;max-width:90vw;text-align:center}
+}
+@media (hover:none){
+  .cell:hover .cell-bg{transform:none}
+  .ccap{opacity:1}
+}
+
 @media print{
   @page { margin: 0; size: A4 landscape; }
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
@@ -294,7 +332,7 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
   <div class="etb-row">
     <span class="el">Имя</span><input class="ei" id="ename" style="width:155px">
     <span class="el">Строка 1</span><input class="ei" id="eline1" style="width:215px" placeholder="2D Art Supervisor · Environment Artist">
-    <span class="el">Строка 2</span><input class="ei" id="eline2" style="width:195px" placeholder="Wargaming · Belgrade">
+    <span class="el">Строка 2</span><input class="ei" id="eline2" style="width:195px" placeholder="Город, страна">
     <span class="el">Строка 3</span><input class="ei" id="eline3" style="width:175px">
     <div class="esp"></div>
     <a href="https://clarity.microsoft.com/projects/view/y68zizkq9o/dashboard" target="_blank" class="alink">📊 Clarity</a>
@@ -331,7 +369,7 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
     </div>
   </header>
 
-  <div id="rows-wrap"></div>
+  <div id="rows-wrap" data-clarity-mask="True"></div>
 
   <div id="addbar">
     <span class="albl">+ Добавить строку:</span>
@@ -355,7 +393,7 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
 </footer>
 
 <!-- LIGHTBOX -->
-<div id="lb">
+<div id="lb" data-clarity-mask="True">
   <button id="lbx" onclick="closeLB()">×</button>
   <div id="lb-scroll"><div id="lb-img-wrap" style="position:relative;display:inline-block;line-height:0"><img id="lb-img" alt="" draggable="false"><img id="lb-nda-img" src="" alt="NDA" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;cursor:default"></div></div>
   <div id="lb-scroll-track"><div id="lb-scroll-thumb"></div></div>
@@ -368,16 +406,51 @@ footer{border-top:1px solid #eee;padding:24px 40px;margin-top:8px}
 <div id="nda-toast">🔒 NDA · Mariia Filippova — материалы защищены</div>
 
 <script>
-/* ══ CONFIG (РОДНЫЕ КЛЮЧИ МАШИ СОХРАНЕНЫ) ══ */
-var BIN_ID  = '6a857598f5f4af5e2927e1b3';
-var API_KEY = '$2a$10$yiqe27PHrmTV/4eeP4rI4.R6d/kXdKb44upyfo9IY8XcU8gcKxsfC';
-var SECRET  = 'bong2026';
-var IS_EDIT = new URLSearchParams(location.search).get('key') === SECRET;
+/* ══ CONFIG ══ */
+var BIN_ID   = '6a857598f5f4af5e2927e1b3';
+/* Только ключ на ЧТЕНИЕ (JSONBin → API Keys → Access Key с одним правом Read).
+   Пусто = бин публичный и читается без ключа. Master Key сюда НЕ вставлять. */
+var READ_KEY = '$2a$10$AsWn5e/WrU36jauvF2FrIeUFyXGvWV4InOQXm2rPYsXhVr3JUUntq';
+/* Редактор открывается по секретной ссылке ?a=<токен>. В коде лежит только SHA-256 токена,
+   сам токен из кода не узнать. Ключ на запись спрашивается в браузере
+   и хранится только в sessionStorage до закрытия вкладки. */
+var EDIT_HASH = '0b7d9135be8ec8a2e9b224b37467c9f2c11cb48925239c519562494c123b1009';
+var IS_EDIT  = false;
+function checkEditToken(){
+  var t=new URLSearchParams(location.search).get('a');
+  if(!t||!window.crypto||!crypto.subtle||!window.TextEncoder) return Promise.resolve(false);
+  return crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)).then(function(b){
+    var hex=Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2);}).join('');
+    return hex===EDIT_HASH;
+  }).catch(function(){return false;});
+}
+var CACHE_KEY = 'mf_cache_v2';
+try{localStorage.removeItem('mf_cache');}catch(e){}
+
+function getWriteKey(){
+  var k='';
+  try{k=sessionStorage.getItem('jb_write_key')||'';}catch(e){}
+  if(!k){
+    k=(prompt('JSONBin Master Key для сохранения (хранится только в этой вкладке):')||'').trim();
+    if(k){try{sessionStorage.setItem('jb_write_key',k);}catch(e){}}
+  }
+  return k;
+}
+function forgetWriteKey(){try{sessionStorage.removeItem('jb_write_key');}catch(e){}}
+
+/* Данные из бина считаем недоверенными: в ссылки пускаем только http(s)/mailto */
+function safeUrl(u){
+  u=(u||'').trim();
+  return /^(https?:\/\/|mailto:)/i.test(u)?u:'';
+}
+function cssUrl(u){
+  return 'url("'+String(u).replace(/["\\\n\r]/g,function(c){return encodeURIComponent(c);})+'")';
+}
 
 var S = {
   name:'Mariia Filippova', line1:'2D Art Supervisor · Environment Artist',
-  line2:'Wargaming · Belgrade, Serbia', line3:'',
-  email:'marybong13@gmail.com',
+  line2:'', line3:'',
+  email:'',
   liUrl:'https://linkedin.com/in/mariia-filippova-marybong',
   asUrl:'https://artstation.com/marybong', tgUrl:'', cvUrl:'', pdfUrl:'', gaId:'',
   divTextColor:'#888888', divLineColor:'#e0e0e0',
@@ -397,34 +470,46 @@ function gd(url){
   if(!url || !url.trim())return '';
   var m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
   if(m)return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1200';
-  return url.trim();
+  return /^https:\/\//i.test(url.trim())?url.trim():'';
 }
 function gdFull(url){
   if(!url || !url.trim())return '';
   var m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
   if(m)return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w3000';
-  return url.trim();
+  return /^https:\/\//i.test(url.trim())?url.trim():'';
 }
 
 /* API */
+var LOADED = false; /* true только если контент реально пришёл с сервера */
 function apiLoad(){
-  return fetch('https://api.jsonbin.io/v3/b/'+BIN_ID+'/latest',{headers:{'X-Master-Key':API_KEY}})
+  var h=READ_KEY?{'X-Access-Key':READ_KEY}:{};
+  if(IS_EDIT){var wk=getWriteKey(); if(wk) h={'X-Master-Key':wk};}
+  return fetch('https://api.jsonbin.io/v3/b/'+BIN_ID+'/latest',{headers:h})
     .then(function(r){return r.json();})
     .then(function(d){
         if(d&&d.record&&d.record.rows!==undefined){
-            S=Object.assign(S, d.record);
-            localStorage.setItem('mf_cache',JSON.stringify(S));
-        }
+            S=Object.assign(S, d.record); LOADED=true;
+            try{localStorage.setItem(CACHE_KEY,JSON.stringify(S));}catch(e){}
+        } else if(IS_EDIT){ forgetWriteKey(); }
     })
     .catch(function(){});
 }
 function apiSave(){
+  /* Защита от потери данных: без загруженного с сервера контента не перезаписываем бин */
+  if(!LOADED){flash('✗ Контент не загрузился — сохранение заблокировано',true);return Promise.resolve(false);}
+  var key=getWriteKey();
+  if(!key){flash('✗ Нет ключа',true);return Promise.resolve(false);}
   return fetch('https://api.jsonbin.io/v3/b/'+BIN_ID,{
     method:'PUT',
-    headers:{'Content-Type':'application/json','X-Master-Key':API_KEY,'X-Bin-Versioning':'false'},
+    headers:{'Content-Type':'application/json','X-Master-Key':key,'X-Bin-Versioning':'false'},
     body:JSON.stringify(S)
-  }).then(function(){localStorage.setItem('mf_cache',JSON.stringify(S));flash('✓ Сохранено',false);})
-    .catch(function(){flash('✗ Ошибка',true);});
+  }).then(function(r){
+      if(r.status===401||r.status===403){forgetWriteKey();flash('✗ Неверный ключ',true);return false;}
+      if(!r.ok){flash('✗ Ошибка '+r.status,true);return false;}
+      try{localStorage.setItem(CACHE_KEY,JSON.stringify(S));}catch(e){}
+      flash('✓ Сохранено',false);return true;
+    })
+    .catch(function(){flash('✗ Ошибка',true);return false;});
 }
 function flash(msg,err){
   var f=document.getElementById('efl');f.textContent=msg;
@@ -435,11 +520,11 @@ function flash(msg,err){
 /* Google Analytics Injector */
 var gaInit = false;
 function initGA() {
-  if(gaInit || !S.gaId) return;
+  if(gaInit || !/^G-[A-Z0-9]+$/i.test(S.gaId||'')) return;
   gaInit = true;
   var s = document.createElement('script');
   s.async = true;
-  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + S.gaId;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(S.gaId);
   document.head.appendChild(s);
   window.dataLayer = window.dataLayer || [];
   window.gtag = function(){dataLayer.push(arguments);}
@@ -460,8 +545,9 @@ function renderHeader(){
   
   var hl=document.getElementById('hlinks');hl.innerHTML='';
   function lnk(href,label,cls){
+    href=safeUrl(href);
     if(!href)return;
-    var a=document.createElement('a');a.href=href;a.textContent=label;
+    var a=document.createElement('a');a.href=href;a.rel='noopener noreferrer';a.textContent=label;
     if(cls)a.className=cls;
     if(!href.startsWith('mailto'))a.target='_blank';
     hl.appendChild(a);
@@ -470,20 +556,20 @@ function renderHeader(){
   lnk(S.asUrl,'ArtStation');
   
   // КНОПКИ СКАЧИВАНИЯ
-  if(S.cvUrl) {
+  if(safeUrl(S.cvUrl)) {
       var cvb = document.createElement('a');
       cvb.className = 'hcv';
       cvb.textContent = '↓ CV';
-      cvb.href = S.cvUrl;
-      cvb.target = '_blank';
+      cvb.href = safeUrl(S.cvUrl);
+      cvb.target = '_blank'; cvb.rel = 'noopener noreferrer';
       hl.appendChild(cvb);
   }
-  if(S.pdfUrl) {
+  if(safeUrl(S.pdfUrl)) {
       var pb = document.createElement('a');
       pb.className = 'hpdf';
       pb.textContent = '↓ Portfolio PDF';
-      pb.href = S.pdfUrl;
-      pb.target = '_blank';
+      pb.href = safeUrl(S.pdfUrl);
+      pb.target = '_blank'; pb.rel = 'noopener noreferrer';
       hl.appendChild(pb);
   }
 
@@ -792,7 +878,7 @@ function renderGrid(){
           var posX=cell.posX!==undefined?cell.posX:50;
           bg.style.backgroundSize=zoomVal===100?'cover':zoomVal+'%';
           bg.style.backgroundPosition=posX+'% center';
-          if(imgUrl)bg.style.backgroundImage='url('+imgUrl+')';
+          if(imgUrl)bg.style.backgroundImage=cssUrl(imgUrl);
           div.appendChild(bg);
 
           if(!imgUrl&&IS_EDIT){
@@ -816,14 +902,14 @@ function renderGrid(){
               ft.className='fs-item'+(ii===0?' act':'');
               ft.src=gd(im.url);ft.alt='';
               ft.addEventListener('mouseenter',function(){
-                bg.style.backgroundImage='url('+gd(im.url)+')';
+                bg.style.backgroundImage=gd(im.url)?cssUrl(gd(im.url)):'';
                 fs.querySelectorAll('.fs-item').forEach(function(x){x.classList.remove('act');});
                 ft.classList.add('act');
               });
               fs.appendChild(ft);
             });
             fs.addEventListener('mouseleave',function(){
-              bg.style.backgroundImage=origUrl?'url('+origUrl+')':'';
+              bg.style.backgroundImage=origUrl?cssUrl(origUrl):'';
               fs.querySelectorAll('.fs-item').forEach(function(x,xi){x.classList.toggle('act',xi===0);});
             });
             div.appendChild(fs);
@@ -983,7 +1069,7 @@ function renderGrid(){
                 var it=document.createElement('div');
                 it.className='extra-item';it.setAttribute('draggable','true');it.title='Тяни чтобы переставить';
                 var ibg=document.createElement('div');ibg.className='eibg';
-                ibg.style.backgroundImage='url('+gd(im.url)+')';
+                ibg.style.backgroundImage=gd(im.url)?cssUrl(gd(im.url)):'';
                 var xb=document.createElement('button');xb.className='extra-del';xb.textContent='×';
                 (function(i){xb.onclick=function(e){e.stopPropagation();cell.images.splice(i,1);renderExtras();};})(xi);
 
@@ -1230,7 +1316,7 @@ function fillEditor(){
   document.getElementById('epdf').value=S.pdfUrl||'';
   document.getElementById('ega').value=S.gaId||'';
 }
-function saveAll(){
+function collectEditor(){
   S.name=document.getElementById('ename').value;
   S.line1=document.getElementById('eline1').value;
   S.line2=document.getElementById('eline2').value;
@@ -1242,13 +1328,17 @@ function saveAll(){
   S.cvUrl=document.getElementById('ecv').value.trim();
   S.pdfUrl=document.getElementById('epdf').value.trim();
   S.gaId=document.getElementById('ega').value.trim();
-  renderHeader();flash('Сохраняю...',false);apiSave();
 }
-function exitEdit(){saveAll();setTimeout(function(){location.href=location.pathname;},800);}
+function saveAll(){collectEditor();renderHeader();flash('Сохраняю...',false);apiSave();}
+function exitEdit(){
+  collectEditor();renderHeader();flash('Сохраняю...',false);
+  apiSave().then(function(ok){ if(ok){forgetWriteKey();setTimeout(function(){location.href=location.pathname;},600);} });
+}
 
 /* INIT */
-(function(){
-  try{var c=localStorage.getItem('mf_cache');if(c){S=JSON.parse(c);renderHeader();renderGrid(); initGA();}}catch(e){}
+checkEditToken().then(function(ok){
+  IS_EDIT=ok;
+  try{var c=localStorage.getItem(CACHE_KEY);if(c){S=JSON.parse(c);renderHeader();renderGrid(); initGA();}}catch(e){}
   apiLoad().then(function(){
     document.getElementById('loading').style.display='none';
     renderHeader();renderGrid();
@@ -1259,7 +1349,7 @@ function exitEdit(){saveAll();setTimeout(function(){location.href=location.pathn
       fillEditor();
     }
   });
-})();
+});
 </script>
 </body>
 </html>
